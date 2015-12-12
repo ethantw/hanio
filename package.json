@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Han.js in the server side (Node.js)",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ethantw/hanio.git"

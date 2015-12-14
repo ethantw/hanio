@@ -22,29 +22,23 @@ gulp.task( 'default', [ 'build' ])
 gulp.task( 'build',   [ 'index.js' ])
 gulp.task( 'dev',     [ 'default', 'server', 'watch' ])
 
-gulp.task( 'server', function() {
-  server({ port: 3333 })
-})
+gulp.task( 'server', () => server({ port: 3333 }))
 
-gulp.task( 'watch', function() {
+gulp.task( 'watch', () => {
   gulp.watch( './src/**/*.js', [ 'index.js' ])
 })
 
-gulp.task( 'index.js', [ 'pack' ], function() {
+gulp.task( 'index.js', [ 'pack' ], () => {
   gulp.src( './dist/hanio.js' )
   .pipe(concat( 'hanio.js', {
-    process: function( src ) {
-      return (
-        banner + src
-        .replace( /IMPORT/g, 'require' )
-        .replace( /@VERSION/g, pkg.version )
-      )
-    }
+    process: src => ( banner + src )
+      .replace( /IMPORT/g, 'require' )
+      .replace( /@VERSION/g, pkg.version )
   }))
   .pipe(gulp.dest( './dist' ))
 })
 
-gulp.task( 'pack', function( callback ) {
+gulp.task( 'pack', callback => {
   webpack({
     entry: './src/index.js',
     output: {
@@ -63,7 +57,7 @@ gulp.task( 'pack', function( callback ) {
       loose: 'all',
     },
     devtool: '#source-map',
-  }, function( error, stat ) {
+  }, ( error, stat ) => {
     if ( error )  throw new util.PluginError( 'webpack', error )
     util.log( '[webpack]', stat.toString())
     callback()

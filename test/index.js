@@ -44,28 +44,41 @@ desc( 'Normalisation', () => {
 
   it( 'Adjacent decoration lines', () => {
     html = '<u>a</u><u>b</u>c<u>d</u><u>e</u>'
-    hio  = Hanio( html ).renderDecoLine()
-    eq(  hio.root.find( 'u.adjacent' ).length, 4 )
+    hio  = Hanio( html ).renderElmt()
+    eq(  hio.root.find( 'u.adjacent' ).length, 2 )
 
     html = `<u>註記元素甲</u><u>註記元素乙</u><u>註記元素丙</u><u>註記元素丁</u>`
-    hio  = Hanio( html ).renderDecoLine()
+    hio  = Hanio( html ).renderElmt()
     eq(  hio.root.find( 'u.adjacent' ).length, 3 )
 
     html = `<u>註記元素甲</u><ins>增訂元素甲</ins><u>註記元素乙</u>一般文字節點<ins>增訂元素乙</ins><u>註記元素丙</u><ins>增訂元素丙</ins>一般文字節點；<s>訛訊元素甲</s><del>刪訂元素甲</del><s>訛訊元素乙</s>一般文字節點<del>刪訂元素乙</del><s>訛訊元素乙</s><del>刪訂元素丙</del>。`
-    hio  = Hanio( html ).renderDecoLine()
+    hio  = Hanio( html ).renderElmt()
     eq(  hio.root.find( 'u.adjacent' ).length, 2 )
     eq(  hio.root.find( 'ins.adjacent' ).length, 2 )
 
     html = `<u>註記元素</u><s>訛訊元素</s><ins>增訂元素</ins><del>刪訂元素</del>。`
-    hio  = Hanio( html ).renderDecoLine()
+    hio  = Hanio( html ).renderElmt()
     eq(  hio.root.find( '.adjacent' ).length, 0 )
 
     html = `<u>註記元素</u><ins>增訂元素</ins><s>訛訊元素</s><del>刪訂元素</del>。`
-    hio  = Hanio( html ).renderDecoLine()
+    hio  = Hanio( html ).renderElmt()
     eq(  hio.root.find( 'u.adjacent' ).length, 0 )
     eq(  hio.root.find( 'ins.adjacent' ).length, 1 )
-    eq(  hio.root.find( 's.adjacent' ).length, 1 )
+    eq(  hio.root.find( 's.adjacent' ).length, 0 )
     eq(  hio.root.find( 'del.adjacent' ).length, 1 )
+
+    // Ignorable:
+    html = '<u>a</u><u>b</u><wbr><u>d</u><u>e</u>'
+    hio  = Hanio( html ).renderElmt()
+    eq(  hio.root.find( 'u.adjacent' ).length, 3 )
+
+    html = '<u>a</u><u>b</u><!--c--><u>d</u><u>e</u>'
+    hio  = Hanio( html ).renderElmt()
+    eq(  hio.root.find( 'u.adjacent' ).length, 3 )
+
+    html = '<u>a</u><u>b</u><!--c--><wbr><wbr><!--c--><u>d</u><u>e</u>'
+    hio  = Hanio( html ).renderElmt()
+    eq(  hio.root.find( 'u.adjacent' ).length, 3 )
   })
 
   it( 'Emphasis marks', () => {
@@ -95,7 +108,7 @@ desc( 'Normalisation', () => {
     // Basic:
     html = '<ruby>字<rt>zi</ruby>'
     hio  = Hanio( html ).renderRuby()
-    htmleq( hio.root().html(), '<h-ruby><h-ru annotation="true">字<rt>zi</rt></h-ru></h-ruby>' )
+    htmleq( hio.root.html(), '<h-ruby><h-ru annotation="true">字<rt>zi</rt></h-ru></h-ruby>' )
 
     // Zhuyin ruby:
     html = `
@@ -264,8 +277,9 @@ desc( 'Normalisation', () => {
   })
 })
 
+/*
 desc( '', () => {
   it( '', () => {
   })
 })
-
+*/

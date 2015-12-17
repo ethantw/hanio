@@ -1,4 +1,14 @@
 
-const Fibrio = IMPORT( 'fibrio' )
-console.log( new Set( Fibrio.preset.HTML5.BDRY ).has( 'p' ))
+'use strict'
+
+import Core from './core'
+import './init'
+
+const Hanio = ( ...arg ) => new Core( ...arg )
+
+Object.assign( Hanio, {
+  fn: Core.prototype,
+})
+
+export default Hanio
 

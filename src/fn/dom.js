@@ -7,8 +7,9 @@ const dom = {
     if ( prop === undefined || typeof this !== 'object' ) {
       return undefined
     } else if ( !this[0] && this[ prop ] ) {
-      return typeof this[ prop ] === 'function' ?
-        this[ prop ]() : this[ prop ]
+      return typeof this[ prop ] === 'function'
+        ? this[ prop ]()
+        : this[ prop ]
     } else if ( this[0] && this[0][ prop ] ) {
       return this[0][ prop ]
     }
@@ -131,6 +132,18 @@ const dom = {
 
   createText( text ) {
     return $( `<hanio-text>${ text }</hanio-text>` )
+  },
+
+  addClass( clazz ) {
+    return $( this ).addClass( clazz )
+  },
+
+  removeClass( clazz ) {
+    return $( this ).removeClass( clazz )
+  },
+
+  matches( selector ) {
+    return matches( this, selector )
   },
 
   isIgnorable() {

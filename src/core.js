@@ -79,7 +79,6 @@ class Core {
    * @return {Hanio|HTMLString}
    */
   render( ...arg ) {
-    return this
     const returnHTML = typeof arg[ arg.length - 1 ] === 'boolean'
       ? arg.pop()
       : false

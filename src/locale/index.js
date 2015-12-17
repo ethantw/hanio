@@ -1,8 +1,8 @@
 
-import { next, isIgnorable } from '../fn/dom'
-
-const $      = IMPORT( 'cheerio' )
-const Fibrio = IMPORT( 'fibrio' )
+import {
+  next, addClass,
+  matches, isIgnorable,
+} from '../fn/dom'
 
 class Locale {
   constructor( $elmt ) {
@@ -22,7 +22,7 @@ class Locale {
     let i = $target.length
 
     traverse: while ( i-- ) {
-      let elmt = $target[ i ]
+      const elmt = $target[ i ]
       let adjacent
 
       // Ignore all `<wbr>` and comments in between.
@@ -31,8 +31,8 @@ class Locale {
         if ( !adjacent )  continue traverse
       } while ( adjacent::isIgnorable())
 
-      if ( Fibrio.matches( adjacent, target )) {
-        $( adjacent ).addClass( 'adjacent' )
+      if ( adjacent::matches( target )) {
+        adjacent::addClass( 'adjacent' )
       }
     }
     return this

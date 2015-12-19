@@ -6,6 +6,7 @@ const util    = require( 'gulp-util' )
 const concat  = require( 'gulp-concat-util' )
 const server  = require( 'gulp-connect' ).server
 const webpack = require( 'webpack' )
+const mocha   = require( 'gulp-mocha' )
 
 const pkg     = require( './package.json' )
 const banner  = (
@@ -19,17 +20,22 @@ const banner  = (
 
 // Unified tasks
 gulp.task( 'default', [ 'build' ])
-gulp.task( 'build',   [ 'index.js' ])
+gulp.task( 'build',   [ 'index.js', 'test' ])
 gulp.task( 'dev',     [ 'default', 'server', 'watch' ])
 
 gulp.task( 'server', () => server({ port: 3333 }))
 
 gulp.task( 'watch', () => {
-  gulp.watch( './src/**/*.js', [ 'index.js' ])
+  gulp.watch( './src/**/*.js', [ 'build' ])
+})
+
+gulp.task( 'test', [ 'index.js' ], () => {
+  return gulp.src( './test/index.js', { read: false })
+  .pipe(mocha())
 })
 
 gulp.task( 'index.js', [ 'pack' ], () => {
-  gulp.src( './dist/hanio.js' )
+  return gulp.src( './dist/hanio.js' )
   .pipe(concat( 'hanio.js', {
     process: src => ( banner + src )
       .replace( /IMPORT/g, 'require' )

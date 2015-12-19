@@ -1,12 +1,12 @@
 
 import {
-  next, addClass,
+  prev, addClass,
   matches, isIgnorable,
 } from '../fn/dom'
 
 class Locale {
-  constructor( $elmt ) {
-    this.context = $elmt
+  constructor( $context ) {
+    this.context = $context
   }
 
   renderElmt() {
@@ -22,18 +22,19 @@ class Locale {
     let i = $target.length
 
     traverse: while ( i-- ) {
-      const elmt = $target[ i ]
-      let adjacent
+      const $this = $target[ i ]
+      let $prev
 
-      // Ignore all `<wbr>` and comments in between.
+      // Ignore all `<wbr>` and comments in between,
+      // and add class `.adjacent` once two targets
+      // are next to each other.
       do {
-        adjacent = ( adjacent || elmt )::next()
-        if ( !adjacent )  continue traverse
-      } while ( adjacent::isIgnorable())
+        $prev = ( $prev || $this )::prev()
 
-      if ( adjacent::matches( target )) {
-        adjacent::addClass( 'adjacent' )
-      }
+        if ( $prev && $prev === $target[i-1] ) {
+          $this::addClass( 'adjacent' )
+        }
+      } while ( $prev::isIgnorable())
     }
     return this
   }

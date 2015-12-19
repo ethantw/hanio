@@ -130,6 +130,10 @@ const dom = {
     return sib[ idx ]
   },
 
+  create( html ) {
+    return $( html )
+  },
+
   createText( text ) {
     return $( `<hanio-text>${ text }</hanio-text>` )
   },
@@ -148,7 +152,7 @@ const dom = {
 
   isIgnorable() {
     return (
-      matches( this, 'wbr' ) ||
+      matches( this, 'wbr, [hidden]' ) ||
       this::dom.type() === 'comment'
     )
   },

@@ -41,6 +41,11 @@ class Core {
       ohtml,
     })
 
+    // Initialise the text finder (Fibrio):
+    this.finder = Fibrio( '' )
+    this.finder.context = this.context
+    this.finder.ohtml   = this.ohtml
+
     void ( cond.length ? cond : rootElmt )
       .addClass( 'hanio-rendered han-js-rendered' )
   }

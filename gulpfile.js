@@ -27,6 +27,7 @@ gulp.task( 'server', () => server({ port: 3333 }))
 
 gulp.task( 'watch', () => {
   gulp.watch( './src/**/*.js', [ 'build' ])
+  gulp.watch( './test/**/*.js', [ 'test' ])
 })
 
 gulp.task( 'test', [ 'index.js' ], () => {

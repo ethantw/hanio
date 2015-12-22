@@ -1,7 +1,6 @@
 
+import $    from 'cheerio'
 import root from './fn/root'
-
-const $ = IMPORT( 'cheerio' )
 
 class Core {
   /**

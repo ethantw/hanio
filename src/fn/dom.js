@@ -1,6 +1,6 @@
 
-const $       = IMPORT( 'cheerio' )
-const matches = IMPORT( 'fibrio' ).matches
+import $ from 'cheerio'
+import { matches } from 'fibrio'
 
 const dom = {
   prop( prop ) {

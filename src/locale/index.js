@@ -1,10 +1,9 @@
 
+import Fibrio from 'fibrio'
 import {
   prev, addClass,
   matches, isIgnorable,
 } from '../fn/dom'
-
-const Fibrio = IMPORT( 'fibrio' )
 
 const EM_AVOID = 'rt, h-char, h-char-group'
 

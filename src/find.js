@@ -1,9 +1,8 @@
 
+import Fibrio     from 'fibrio'
 import Core       from './core'
 import { create } from './fn/dom'
 import { UNICODE, TYPESET } from './regex.js'
-
-const Fibrio = Core.find = IMPORT( 'fibrio' )
 
 const createBdGroup = ( portion, mat ) => {
   const $elmt = create(
@@ -228,6 +227,8 @@ Object.assign( Fibrio.fn, {
     return this
   },
 })
+
+Object.assign( Core, { find: Fibrio })
 
 void [
   'mode', 'action', 'process',

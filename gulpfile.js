@@ -38,7 +38,6 @@ gulp.task( 'index.js', [ 'pack' ], () =>
   gulp.src( './dist/hanio.js' )
   .pipe(concat( 'hanio.js', {
     process: src => ( banner + src )
-      .replace( /IMPORT/g, 'require' )
       .replace( /@VERSION/g, pkg.version )
   }))
   .pipe(gulp.dest( './dist' ))
@@ -59,6 +58,7 @@ gulp.task( 'pack', callback =>
         loader: 'babel',
       }]
     },
+    externals: [ /^[a-z\-0-9]+$/ ],
     babel: {
       loose: 'all',
     },

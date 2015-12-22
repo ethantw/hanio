@@ -1,4 +1,4 @@
 
-export default html => IMPORT( 'cheerio' )
-  ( `<hanio-root>${ html }</hanio-root>` )
+import $ from 'cheerio'
+export default html => $( `<hanio-root>${html}</hanio-root>` )
 

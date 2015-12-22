@@ -8,11 +8,11 @@ const Hanio  = require( '..' )
 
 const desc   = describe
 const eq     = assert.equal
-const enteq  = ( a, b ) => assert.equal(hexi( a ), hexi( b ))
+const enteq  = ( a, b ) => assert.equal(hexa( a ), hexa( b ))
 const htmleq = ( a, b ) => eq(nmlize( a ), nmlize( b ))
-const hexi   = v => Ent.normalizeXML( v, 'hex' )
+const hexa   = v => Ent.normalizeXML( v, 'utf-8' )
 
-const nmlize = html => hexi( html )
+const nmlize = html => hexa( html )
   .replace( /[\r\n]/g, '' )
   .replace( /\s{2,}/g, ' ' )
   .replace( /=["']([^"'])["']/g, '="$1"' )
@@ -29,13 +29,13 @@ desc( 'Basic', () => {
   it( 'Default rendering routine (zh)', () => {
     const root = Hanio( html ).render().root.find( 'html' )
     eq( root.hasClass( 'han-js-rendered' ), true )
-    enteq( root.find( 'title' ).html(), 'A辭Q' )
+    enteq( Hanio.html( root.find( 'title' )), '<title>A辭Q</title>' )
   })
 
   it( 'Default rendering routine (ja)', () => {
     const root = Hanio( html.replace( '"zh"', '"ja"' ) ).render().root.find( 'html' )
     eq( root.hasClass( 'han-js-rendered' ), true )
-    enteq( root.find( 'title' ).html(), 'A辭Q' )
+    enteq( Hanio.html( root.find( 'title' )), '<title>A辭Q</title>' )
   })
 })
 
@@ -84,15 +84,15 @@ desc( 'Normalisation', () => {
   it( 'Emphasis marks', () => {
     html = '<em>測試test</em>'
     hio  = Hanio( html ).renderEm()
-    htmleq( hio.root.html(), '<em><h-char class="hanzi cjk">測</h-char><h-char class="hanzi cjk">試</h-char><h-word class="western"><h-char class="alphabet latin">t</h-char><h-char class="alphabet latin">e</h-char><h-char class="alphabet latin">s</h-char><h-char class="alphabet latin">t</h-char></h-word></em>' )
+    htmleq( hio.html, '<em><h-char class="hanzi cjk">測</h-char><h-char class="hanzi cjk">試</h-char><h-word class="western"><h-char class="alphabet western latin">t</h-char><h-char class="alphabet western latin">e</h-char><h-char class="alphabet western latin">s</h-char><h-char class="alphabet western latin">t</h-char></h-word></em>' )
 
     html = '<em>「測『試』」，test ‘this!’。</em>'
     hio  = Hanio( html ).renderEm()
-    htmleq( hio.root.html(), '<em><h-jinze class="tou"><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char><h-char class="hanzi cjk">測</h-char></h-jinze><h-jinze class="touwei"><h-char unicode="300e" class="biaodian cjk bd-open">『</h-char><h-char class="hanzi cjk">試</h-char><h-char-group class="biaodian cjk">』」，</h-char-group></h-jinze><h-word class="western"><h-char class="alphabet latin">t</h-char><h-char class="alphabet latin">e</h-char><h-char class="alphabet latin">s</h-char><h-char class="alphabet latin">t</h-char></h-word> <h-word class="western"><h-char class="punct">‘</h-char><h-char class="alphabet latin">t</h-char><h-char class="alphabet latin">h</h-char><h-char class="alphabet latin">i</h-char><h-char class="alphabet latin">s</h-char><h-char class="punct">!</h-char></h-word><h-jinze class="wei"><h-word class="western"><h-char class="punct">’</h-char></h-word><h-char unicode="3002" class="biaodian cjk bd-end">。</h-char></h-jinze></em>' )
+    htmleq( hio.html, '<em><h-jinze class="tou"><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char><h-char class="hanzi cjk">測</h-char></h-jinze><h-jinze class="touwei"><h-char unicode="300e" class="biaodian cjk bd-open">『</h-char><h-char class="hanzi cjk">試</h-char><h-char-group class="biaodian cjk"><h-char unicode="300f" class="biaodian cjk bd-close bd-end">』</h-char><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char><h-char unicode="ff0c" class="biaodian cjk bd-close bd-end">，</h-char></h-char-group></h-jinze><h-word class="western"><h-char class="alphabet western latin">t</h-char><h-char class="alphabet western latin">e</h-char><h-char class="alphabet western latin">s</h-char><h-char class="alphabet western latin">t</h-char></h-word> <h-word class="western"><h-char class="punct">‘</h-char><h-char class="alphabet western latin">t</h-char><h-char class="alphabet western latin">h</h-char><h-char class="alphabet western latin">i</h-char><h-char class="alphabet western latin">s</h-char><h-char class="punct">!</h-char></h-word><h-jinze class="wei"><h-word class="western"><h-char class="punct">’</h-char></h-word><h-char unicode="3002" class="biaodian cjk bd-close bd-end">。</h-char></h-jinze></em>' )
 
-    html = '<em>𫞵𫞦𠁻𠁶〇⼌⿕⺃⻍⻰⻳⿸⿷⿳</em>'
+  html = '<em>你𫞵𫞦𠁻𠁶〇我⼌⿕⺃⻍他⻰⻳⿸⿷⿳</em>'
     hio  = Hanio( html ).renderEm()
-    eq( hio.root.find( 'h-char.cjk' ).length, 14 )
+    eq( hio.root.find( 'h-char.cjk' ).length, 17 )
 
     html =  '<em>¡Hola! Ὅμηρος Свети</em>'
     hio  = Hanio( html ).renderEm()
@@ -108,7 +108,7 @@ desc( 'Normalisation', () => {
     // Basic:
     html = '<ruby>字<rt>zi</ruby>'
     hio  = Hanio( html ).renderRuby()
-    htmleq( hio.root.html(), '<h-ruby><h-ru annotation="true">字<rt>zi</rt></h-ru></h-ruby>' )
+    htmleq( hio.html, '<h-ruby><h-ru annotation="true">字<rt>zi</rt></h-ru></h-ruby>' )
 
     // Zhuyin ruby:
     html = `
@@ -143,7 +143,7 @@ desc( 'Normalisation', () => {
     eq( $.html( lv1.find( '> rt' )), '<rt rbspan="3">清宣統三年</rt>' )
     eq( lv2.length, 3 )
     eq( lv2[0].attr( 'span' ), 1 )
-    eq( lv1.find( 'rt' ).eq(2).html(), '日' )
+    eq( Hanio.html( lv1.find( 'rt' ).eq(2)), '<rt>日</rt>' )
 
 {
     html = `
@@ -219,7 +219,7 @@ desc( 'Normalisation', () => {
     eq( root.find( 'h-ruby > h-ru > h-ru'  ).length, 21 )
     eq(
       Array.from( root.find( 'p:last-child' ).find( 'rb, rt' ))
-        .map( it => it.html())
+        .map( it => Hanio.html( it ))
         .join(),
       '三,san1,sān,十,shih2,shí,六,liu4,liù,個,ko0,ge,牙,ya2,yá,齒,ch\'ih3,chǐ,捉,cho1,zhuō,對,兒,tuirh4,duìr,廝,ssu1,sī,打,ta3,dǎ'
     )

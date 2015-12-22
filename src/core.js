@@ -1,8 +1,7 @@
 
 import root from './fn/root'
 
-const $      = IMPORT( 'cheerio' )
-const Fibrio = IMPORT( 'fibrio' )
+const $ = IMPORT( 'cheerio' )
 
 class Core {
   /**
@@ -39,10 +38,10 @@ class Core {
       contextSelector,
       condSelector,
       ohtml,
+      // Initialise the text finder/processor (Fibrio):
+      finder: Core.find( '' ),
     })
 
-    // Initialise the text finder (Fibrio):
-    this.finder = Fibrio( '' )
     this.finder.context = this.context
     this.finder.ohtml   = this.ohtml
 
@@ -55,7 +54,7 @@ class Core {
    * root element.
    */
   get html() {
-    return this.root.html()
+    return this.finder.html
   }
 
   /**

@@ -4,6 +4,10 @@ import {
   matches, isIgnorable,
 } from '../fn/dom'
 
+const Fibrio = IMPORT( 'fibrio' )
+
+const EM_AVOID = 'rt, h-char, h-char-group'
+
 class Locale {
   constructor( $context ) {
     this.context = $context
@@ -31,7 +35,7 @@ class Locale {
       do {
         $prev = ( $prev || $this )::prev()
 
-        if ( $prev && $prev === $target[i-1] ) {
+        if ( $prev && $prev === $target[ i-1 ] ) {
           $this::addClass( 'adjacent' )
         }
       } while ( $prev::isIgnorable())
@@ -39,8 +43,18 @@ class Locale {
     return this
   }
 
-  renderEm() {
+  renderEm( target='em' ) {
     return this
+    .filter( target )
+    .addAvoid( EM_AVOID )
+    .jinzify()
+    .groupify({
+      western:  true,
+      biaodian: true,
+    })
+    .charify({ all: true })
+    .removeAvoid( EM_AVOID )
+    .end()
   }
 
   renderRuby() {

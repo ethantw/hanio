@@ -22,30 +22,29 @@ const banner  = (
 gulp.task( 'default', [ 'build' ])
 gulp.task( 'build',   [ 'index.js', 'test' ])
 gulp.task( 'dev',     [ 'default', 'server', 'watch' ])
-
-gulp.task( 'server', () => server({ port: 3333 }))
+gulp.task( 'server',  () => server({ port: 3333 }))
 
 gulp.task( 'watch', () => {
   gulp.watch( './src/**/*.js', [ 'build' ])
   gulp.watch( './test/**/*.js', [ 'test' ])
 })
 
-gulp.task( 'test', [ 'index.js' ], () => {
-  return gulp.src( './test/index.js', { read: false })
+gulp.task( 'test', [ 'index.js' ], () =>
+  gulp.src( './test/index.js', { read: false })
   .pipe(mocha())
-})
+)
 
-gulp.task( 'index.js', [ 'pack' ], () => {
-  return gulp.src( './dist/hanio.js' )
+gulp.task( 'index.js', [ 'pack' ], () =>
+  gulp.src( './dist/hanio.js' )
   .pipe(concat( 'hanio.js', {
     process: src => ( banner + src )
       .replace( /IMPORT/g, 'require' )
       .replace( /@VERSION/g, pkg.version )
   }))
   .pipe(gulp.dest( './dist' ))
-})
+)
 
-gulp.task( 'pack', callback => {
+gulp.task( 'pack', callback =>
   webpack({
     entry: './src/index.js',
     output: {
@@ -57,7 +56,7 @@ gulp.task( 'pack', callback => {
       loaders: [{
         test: /\.jsx?$/,
         exclude: /(node_modules)/,
-        loader: 'babel'
+        loader: 'babel',
       }]
     },
     babel: {
@@ -69,5 +68,5 @@ gulp.task( 'pack', callback => {
     util.log( '[webpack]', stat.toString())
     callback()
   })
-})
+)
 

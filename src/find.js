@@ -175,9 +175,11 @@ Object.assign( Fibrio.fn, {
 
     if ( option.hanzi || option.cjk ) {
       this.wrap(
-        //// TODO: add kana class.
+        TYPESET.char.kana,
+        `<h-char class="eastasian cjk kana"></h-char>`
+      ).wrap(
         TYPESET.char.hanzi,
-        `<h-char class="hanzi cjk"></h-char>`
+        `<h-char class="eastasian cjk hanzi"></h-char>`
       )
     }
 
@@ -212,14 +214,14 @@ Object.assign( Fibrio.fn, {
     if ( option.kana ) {
       this.wrap(
         TYPESET.char.kana,
-        `<h-char class="cjk kana"></h-char>`
+        `<h-char class="eastasian cjk kana"></h-char>`
       )
     }
 
     if ( option.eonmum || option.hangul ) {
       this.wrap(
         TYPESET.char.eonmum,
-        `<h-char class="cjk eonmum hangul"></h-char>`
+        `<h-char class="eastasian eonmum hangul"></h-char>`
       )
     }
 

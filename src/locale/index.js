@@ -1,7 +1,7 @@
 
 import renderDecoLine from './decoline'
 import renderEm       from './em'
-import renderRuby     from './ruby'
+import * as rubyFn    from './ruby'
 
 class Locale {
   constructor( $context ) {
@@ -19,12 +19,15 @@ class Locale {
 
 Locale.fn = Locale.prototype
 
-Object.assign( Locale.fn, {
-  renderElem: Locale.fn.renderElmt,
-  renderDecoLine,
-  renderEm,
-  renderRuby,
-})
+Object.assign(
+  Locale.fn,
+  rubyFn,
+  {
+    renderElem: Locale.fn.renderElmt,
+    renderDecoLine,
+    renderEm,
+  }
+)
 
 export default Locale
 

@@ -121,7 +121,7 @@ desc( 'Normalisation', () => {
     hio = Hanio( html ).renderRuby()
     eq( hio.root.find( 'h-ru[zhuyin]' ).length, 5 )
     eq( hio.root.find( 'h-ru h-zhuyin' ).length, 5 )
-    eq( hio.root.find( 'h-ru[length="3"]' ).length, 2 )
+    eq( hio.root.find( '[length="3"]' ).length, 2 )
 
     // Complex ruby:
     html = `
@@ -139,11 +139,11 @@ desc( 'Normalisation', () => {
     const lv2 = hio.root.find(  'h-ruby > h-ru > h-ru'  )
     eq( hio.root.find( 'rtc' ).length, 0 )
     eq( lv1.length, 1 )
-    eq( lv1[0].attr( 'span' ), 3 )
-    eq( $.html( lv1.find( '> rt' )), '<rt rbspan="3">清宣統三年</rt>' )
+    eq( lv1.eq(0).attr( 'span' ), 3 )
+    htmleq( $.html( hio.root.find( 'h-ruby > h-ru > rt' )), '<rt rbspan="3">清宣統三年</rt>' )
     eq( lv2.length, 3 )
-    eq( lv2[0].attr( 'span' ), 1 )
-    eq( Hanio.html( lv1.find( 'rt' ).eq(2)), '<rt>日</rt>' )
+    eq( lv2.eq(0).attr( 'span' ), 1 )
+    htmleq( Hanio.html( lv1.find( 'rt' ).eq(2)), '<rt>日</rt>' )
 
 {
     html = `
@@ -217,9 +217,9 @@ desc( 'Normalisation', () => {
     eq( root.find( 'rtc' ).length, 0 )
     eq( root.find( 'h-ruby > h-ru'  ).length, 15 )
     eq( root.find( 'h-ruby > h-ru > h-ru'  ).length, 21 )
-    eq(
+    enteq(
       Array.from( root.find( 'p:last-child' ).find( 'rb, rt' ))
-        .map( it => Hanio.html( it ))
+        .map( it => $( it ).text())
         .join(),
       '三,san1,sān,十,shih2,shí,六,liu4,liù,個,ko0,ge,牙,ya2,yá,齒,ch\'ih3,chǐ,捉,cho1,zhuō,對,兒,tuirh4,duìr,廝,ssu1,sī,打,ta3,dǎ'
     )
@@ -247,14 +247,15 @@ desc( 'Normalisation', () => {
   </rtc>
 
   <rtc class="romanization">
-    <rt>Tsi̍t</rt>
+    <rt>Chi̍t</rt>
     <rt>lâng</rt>
     <rt rbspan="2">hoân‑ló</rt>
     <rt>chi̍t</rt>
     <rt>iūⁿ</rt>
   </rtc>
 
-  <rtc class="romanization"><rt>Tsi̍t</rt>
+  <rtc class="romanization">
+    <rt>Tsi̍t</rt>
     <rt>lâng</rt>
     <rt rbspan="2">huân-ló</rt>
     <rt>tsi̍t</rt>
@@ -269,9 +270,9 @@ desc( 'Normalisation', () => {
     eq( root.find( 'rtc' ).length, 0 )
     eq(
       Array.from( root.find( 'rb, h-zhuyin, rt' ))
-        .map( it => it.text())
+        .map( it => $( it ).text() )
         .join(),
-      '一,ㄐㄧㆵ͘,Tsi̍t,人,ㄌㄤˊ,lâng,煩,ㄏㄨㄢˊ,惱,ㄌㄜˋ,hoân‑ló,一,ㄐㄧㆵ͘,chi̍t,樣,ㄧㆫ˫'
+      '一,ㄐㄧㆵ͘,Chi̍t,Tsi̍t,人,ㄌㄤˊ,lâng,lâng,煩,ㄏㄨㄢˊ,惱,ㄌㄜˋ,hoân‑ló,huân-ló,一,ㄐㄧㆵ͘,chi̍t,tsi̍t,樣,ㄧㆫ˫,iūⁿ,iūnn'
     )
 }
   })
@@ -283,3 +284,4 @@ desc( '', () => {
   })
 })
 */
+

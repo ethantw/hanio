@@ -29,19 +29,25 @@ export const renderSimpleRuby = $ruby => {
         break collector
       }
 
-      $$rb.push( $rb )
+      $$rb.unshift( $rb )
     } while ( !partition.has( $rb ))
 
     let $ru = $ruby.hasClass( 'zhuyin' )
       ? createZhuyinRu( $$rb, $rt )
       : createNormalRu( $$rb, $rt )
 
+    // Replace the `<rt>` with the new generated
+    // `<h-ru>` and remove the implied ruby base.
     $rt.replaceWith( $ru )
     $$rb.map( $rb => $rb::rm())
   }
   return createCustomRuby( $ruby )
 }
 
+/**
+ * Transform a complex HTML5-syntax ruby into
+ * a CSS-renderable custom `<h-ruby>`.
+ */
 export const renderComplexRuby = $ruby => {
   $ruby = $( $ruby ).clone()
 

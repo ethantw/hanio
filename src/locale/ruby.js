@@ -3,10 +3,14 @@ import $ from 'cheerio'
 import { prev, rm } from '../fn/dom'
 import { TYPESET }  from '../regex'
 
+/**
+ * Transform a basic HTML5-syntax ruby into
+ * a CSS-renderable custom `<h-ruby>`.
+ */
 export const renderSimpleRuby = $ruby => {
   $ruby = $( $ruby ).clone()
 
-  const partition = new Set(Array.from($ruby.find( 'ru, rb, rt' )))
+  const partition = new Set(Array.from($ruby.find( 'h-ru, rb, rt' )))
   const $$rt      = $ruby.find( 'rt' )
   let i = $$rt.length
 
@@ -15,6 +19,9 @@ export const renderSimpleRuby = $ruby => {
     let $$rb = []
     let $rb
 
+    // Consider the previous node(s) the implied
+    // ruby base and collect them together with
+    // the `<rt>` to form a ruby unit.
     collector: do {
       $rb = ( $rb || $rt )::prev()
 

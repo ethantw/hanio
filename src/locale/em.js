@@ -3,6 +3,10 @@ import Fibrio from 'fibrio'
 
 const EM_AVOID = 'rt, h-char, h-char-group'
 
+/**
+ * Traverse all target elements to render
+ * emphasis marks.
+ */
 export default function( target='em' ) {
   this
   .filter( target )

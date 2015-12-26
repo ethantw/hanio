@@ -86,15 +86,15 @@ desc( 'Normalisation', () => {
     hio  = Hanio( html ).renderEm()
     htmleq( hio.html, '<em><h-char class="eastasian cjk hanzi">測</h-char><h-char class="eastasian cjk hanzi">試</h-char><h-word class="western"><h-char class="alphabet western latin">t</h-char><h-char class="alphabet western latin">e</h-char><h-char class="alphabet western latin">s</h-char><h-char class="alphabet western latin">t</h-char></h-word></em>' )
 
-    html = '<em>「測『試』」，test ‘this!’。</em>'
+    html = '<p>（測試）<em>「測『試』」，test ‘this!’。</em>test.'
     hio  = Hanio( html ).renderEm()
-    htmleq( hio.html, '<em><h-jinze class="tou"><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char><h-char class="eastasian cjk hanzi">測</h-char></h-jinze><h-jinze class="touwei"><h-char unicode="300e" class="biaodian cjk bd-open">『</h-char><h-char class="eastasian cjk hanzi">試</h-char><h-char-group class="biaodian cjk"><h-char unicode="300f" class="biaodian cjk bd-close bd-end">』</h-char><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char><h-char unicode="ff0c" class="biaodian cjk bd-close bd-end">，</h-char></h-char-group></h-jinze><h-word class="western"><h-char class="alphabet western latin">t</h-char><h-char class="alphabet western latin">e</h-char><h-char class="alphabet western latin">s</h-char><h-char class="alphabet western latin">t</h-char></h-word> <h-word class="western"><h-char class="punct">‘</h-char><h-char class="alphabet western latin">t</h-char><h-char class="alphabet western latin">h</h-char><h-char class="alphabet western latin">i</h-char><h-char class="alphabet western latin">s</h-char><h-char class="punct">!</h-char></h-word><h-jinze class="wei"><h-word class="western"><h-char class="punct">’</h-char></h-word><h-char unicode="3002" class="biaodian cjk bd-close bd-end">。</h-char></h-jinze></em>' )
+    htmleq( hio.html, '<p>（測試）<em><h-jinze class="tou"><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char><h-char class="eastasian cjk hanzi">測</h-char></h-jinze><h-jinze class="touwei"><h-char unicode="300e" class="biaodian cjk bd-open">『</h-char><h-char class="eastasian cjk hanzi">試</h-char><h-char-group class="biaodian cjk"><h-char unicode="300f" class="biaodian cjk bd-close bd-end">』</h-char><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char><h-char unicode="ff0c" class="biaodian cjk bd-close bd-end">，</h-char></h-char-group></h-jinze><h-word class="western"><h-char class="alphabet western latin">t</h-char><h-char class="alphabet western latin">e</h-char><h-char class="alphabet western latin">s</h-char><h-char class="alphabet western latin">t</h-char></h-word> <h-word class="western"><h-char class="punct">‘</h-char><h-char class="alphabet western latin">t</h-char><h-char class="alphabet western latin">h</h-char><h-char class="alphabet western latin">i</h-char><h-char class="alphabet western latin">s</h-char><h-char class="punct">!</h-char></h-word><h-jinze class="wei"><h-word class="western"><h-char class="punct">’</h-char></h-word><h-char unicode="3002" class="biaodian cjk bd-close bd-end">。</h-char></h-jinze></em>test.</p>' )
 
-  html = '<em>你𫞵𫞦𠁻𠁶〇我⼌⿕⺃⻍他⻰⻳⿸⿷⿳</em>'
+    html = '你<em>你𫞵𫞦𠁻𠁶〇我⼌⿕⺃⻍他⻰⻳⿸⿷⿳</em>我'
     hio  = Hanio( html ).renderEm()
     eq( hio.root.find( 'h-char.cjk' ).length, 17 )
 
-    html =  '<em>¡Hola! Ὅμηρος Свети</em>'
+    html =  'xxx<em>¡Hola! Ὅμηρος Свети</em>yyy'
     hio  = Hanio( html ).renderEm()
     eq( hio.root.find( 'h-word.western' ).length, 3 )
     eq( hio.root.find( 'h-char.punct' ).length, 2 )
@@ -110,6 +110,10 @@ desc( 'Normalisation', () => {
     hio  = Hanio( html ).renderRuby()
     htmleq( hio.html, '<h-ruby><h-ru annotation="true">字<rt>zi</rt></h-ru></h-ruby>' )
 
+    html = '<ruby><a>字</a><b>體</b><rt>typeface</ruby>'
+    hio  = Hanio( html ).renderRuby()
+    htmleq( hio.html, '<h-ruby><h-ru annotation="true"><a>字</a><b>體</b><rt>typeface</rt></h-ru></h-ruby>' )
+
     // Zhuyin ruby:
     html = `
 <ruby class="mps">
@@ -119,6 +123,7 @@ desc( 'Normalisation', () => {
 </ruby>
     `
     hio = Hanio( html ).renderRuby()
+    eq( hio.root.find( 'h-ruby.zhuyin' ).length, 1 )
     eq( hio.root.find( 'h-ru[zhuyin]' ).length, 5 )
     eq( hio.root.find( 'h-ru h-zhuyin' ).length, 5 )
     eq( hio.root.find( 'h-ru [length="3"]' ).length, 2 )

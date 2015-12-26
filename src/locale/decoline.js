@@ -4,12 +4,17 @@ import {
   matches, isIgnorable,
 } from '../fn/dom'
 
+/**
+ * Traverse all target elements and address
+ * presentational corrections if any two of
+ * them are adjacent to each other.
+ */
 export default function( target='u, ins' ) {
-  const $target = this.context.find( target )
-  let i = $target.length
+  const $$target = this.context.find( target )
+  let i = $$target.length
 
   traverse: while ( i-- ) {
-    const $this = $target[ i ]
+    const $this = $$target[ i ]
     let $prev
 
     // Ignore all `<wbr>` and comments in between,
@@ -18,7 +23,7 @@ export default function( target='u, ins' ) {
     do {
       $prev = ( $prev || $this )::prev()
 
-      if ( $prev && $prev === $target[ i-1 ] ) {
+      if ( $prev && $prev === $$target[ i-1 ] ) {
         $this::addClass( 'adjacent' )
       }
     } while ( $prev::isIgnorable())

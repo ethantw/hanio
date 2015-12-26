@@ -60,8 +60,12 @@ export const renderComplexRuby = $ruby => {
   Array.from( $$rtc ).map( simplifyRubyClass )
   $zhuyin = $$rtc.filter( '.zhuyin' ).first()
 
+  // Deal with Zhuyin `<rtc>` container individually.
+  //
+  // **Note that** only one Zhuyin container are
+  // supported in each complex ruby.
   if ( $zhuyin.length ) {
-    $$ru = Array.from( $zhuyin.find( 'rt' ))
+    $$ru = Array.from($zhuyin.find( 'rt' ))
     .map(( $rt, i ) => {
       const $rb  = $$rb[ i ]
       if ( !$rb )  return
@@ -75,64 +79,68 @@ export const renderComplexRuby = $ruby => {
     $ruby.attr( 'rightangle', 'true' )
   }
 
+  // Other `<rtc>`:
   $$rtc
-    .not( '.zhuyin' )
-    .each(( order, $rtc ) => {
-      $rtc = $( $rtc )
+  .each(( order, $rtc ) => {
+    $rtc = $( $rtc )
+    if ( $rtc.hasClass( 'zhuyin' ))  return
 
-      let $$ret = $rtc
-        .find( 'rt' )
-        .map(( i, $rt ) => {
-          $rt = $( $rt )
-          let rbspan = Number( $rt.attr( 'rbspan' ) || 1 )
-          let span   = 0
-          let $$rb   = []
-          let $rb
+    $$ru = $rtc
+      .find( 'rt' )
+      .map(( i, $rt ) => {
+        $rt = $( $rt )
+        let rbspan = Number( $rt.attr( 'rbspan' ) || 1 )
+        let span   = 0
+        let $$rb   = []
+        let $rb
 
-          if ( rbspan > maxspan )  rbspan = maxspan
+        if ( rbspan > maxspan )  rbspan = maxspan
 
-          collector: do {
-            try {
-              $rb = $$ru.shift()
-              $$rb.push( $rb )
-            } catch (e) {}
+        collector: do {
+          try {
+            $rb = $$ru.shift()
+            $$rb.push( $rb )
+          } catch (e) {}
 
-            if ( !$rb )  break collector
-            span += Number( $( $rb ).attr( 'span' ) || 1 )
-          } while ( rbspan > span )
+          if ( !$rb )  break collector
+          span += Number( $( $rb ).attr( 'span' ) || 1 )
+        } while ( rbspan > span )
 
-          if ( rbspan < span ) {
-            if ( $$rb.length > 1 ) {
-              console.error( 'An impossible `rbspan` value detected.', $rt )
-              return
-            }
-            $$rb = $( $$rb[0] ).find( 'rb' ).get()
-            $$ru = $$rb.slice( rbspan ).concat( $$ru )
-            $$rb = $$rb.slice( 0, rbspan )
-            span = rbspan
+        if ( rbspan < span ) {
+          if ( $$rb.length > 1 ) {
+            console.error( 'An impossible `rbspan` value detected.', $rt )
+            return
           }
+          $$rb = $( $$rb[0] ).find( 'rb' ).get()
+          $$ru = $$rb.slice( rbspan ).concat( $$ru )
+          $$rb = $$rb.slice( 0, rbspan )
+          span = rbspan
+        }
 
-          let $ret = createNormalRu( $$rb, $rt, {
-            'class': $ruby.attr( 'class' ),
-            span,
-            order,
-          })
-
-          $( $$rb.shift() ).replaceWith( $ret )
-          $$rb.map( $rb => $rb::rm())
-          return $ret
+        let $ret = createNormalRu( $$rb, $rt, {
+          'class': $ruby.attr( 'class' ),
+          span,
+          order,
         })
-        .toArray()
-      $$ru = $$ret
 
-      if  ( order === 1 ) {
-        $ruby.attr( 'doubleline', 'true' )
-      }
-      $rtc::rm()
-    })
+        $( $$rb.shift() ).replaceWith( $ret )
+        $$rb.map( $rb => $rb::rm())
+        return $ret
+      })
+      .toArray()
+
+    if  ( order === 1 ) {
+      $ruby.attr( 'doubleline', 'true' )
+    }
+    $rtc::rm()
+  })
   return createCustomRuby( $ruby )
 }
 
+/**
+ * Return a custom `<h-ruby>` element to
+ * avoid default UA styles.
+ */
 export const createCustomRuby = $ruby => {
   let html = $.html( $ruby )
     .replace( /^<ruby[\s\f\n\r\t]*/i, '<h-ruby ' )
@@ -140,6 +148,9 @@ export const createCustomRuby = $ruby => {
   return $( html )
 }
 
+/**
+ * Merge and simplify class aliases.
+ */
 export const simplifyRubyClass = $target => {
   $target = $( $target )
 
@@ -155,6 +166,10 @@ export const simplifyRubyClass = $target => {
   return $target
 }
 
+/**
+ * Return a new `<h-ru>` element with the given
+ * contents.
+ */
 export const createNormalRu = ( $$rb, $rt, attr={} ) => {
   let $ru = $( '<h-ru/>' )
   $$rb = Array.from( $$rb )
@@ -176,41 +191,42 @@ export const createNormalRu = ( $$rb, $rt, attr={} ) => {
   return $ru.attr( attr )
 }
 
-export const createZhuyinRu = ( $rb, $rt ) => {
-  let $ru = $( '<h-ru/>' )
-  $rb = $( $rb ).clone()
-  $ru.attr( 'zhuyin', 'true' )
-
-  $ru
-  .append( $rb )
-  .append(createZhuyinElmt( $rt ))
-  return $ru
+/**
+ * Return a new `<h-ru>` element with the given
+ * contents in Zhuyin form.
+ */
+export const createZhuyinRu = ( $$rb, $rt ) => {
+  // - <h-ru zhuyin>
+  // -   <rb><rb/>
+  // -   <h-zhuyin>
+  // -     <h-yin></h-yin>
+  // -     <h-diao></h-diao>
+  // -   </h-zhuyin>
+  // - </h-ru>
+  const html = (
+    `<h-ru zhuyin="true">${
+      $.html( $$rb ) +
+      getZhuyinHTML( $rt )
+    }</h-ru>`
+  )
+  return $( html )
 }
 
-export const createZhuyinElmt = ( $rt, returnHTML=false ) => {
-  let $zhuyin, zhuyin,
-      yin, diao, len
+export const getZhuyinHTML = $rt => {
+  let zhuyin, yin, diao, len
 
   zhuyin = typeof $rt === 'string'
     ? $rt
     : $( $rt ).text()
 
-  yin = zhuyin.replace( TYPESET.zhuyin.diao, '' )
-  len = yin ? yin.length : 0
+  yin  = zhuyin.replace( TYPESET.zhuyin.diao, '' )
+  len  = yin ? yin.length : 0
   diao = zhuyin
     .replace( yin, '' )
     .replace( /\u02C5/g, '\u02C7' )
     .replace( /\u030D/g, '\u0358' )
 
-  $zhuyin = $(
-    `<h-zhuyin length="${len}" diao="${diao}"></h-zhuyin>`
-  ).html(
-    `<h-yin>${yin}</h-yin><h-diao>${diao}</h-diao>`
-  )
-
-  return returnHTML === false
-    ? $zhuyin
-    : $.html( $zhuyin )
+  return `<h-zhuyin length="${len}" diao="${diao}"><h-yin>${yin}</h-yin><h-diao>${diao}</h-diao></h-zhuyin>`
 }
 
 export const renderRuby = function( target='ruby' ) {

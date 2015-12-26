@@ -112,7 +112,7 @@ desc( 'Normalisation', () => {
 
     // Zhuyin ruby:
     html = `
-<ruby class="zhuyin">
+<ruby class="mps">
   事<rt>ㄕˋ</rt>情<rt>ㄑㄧㄥˊ</rt>
   看<rt>ㄎㄢˋ</rt>
   冷<rt>ㄌㄥˇ</rt>暖<rt>ㄋㄨㄢˇ</rt>
@@ -121,7 +121,7 @@ desc( 'Normalisation', () => {
     hio = Hanio( html ).renderRuby()
     eq( hio.root.find( 'h-ru[zhuyin]' ).length, 5 )
     eq( hio.root.find( 'h-ru h-zhuyin' ).length, 5 )
-    eq( hio.root.find( '[length="3"]' ).length, 2 )
+    eq( hio.root.find( 'h-ru [length="3"]' ).length, 2 )
 
     // Complex ruby:
     html = `

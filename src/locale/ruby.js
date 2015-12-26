@@ -38,14 +38,14 @@ export const renderSimpleRuby = $ruby => {
 export const renderComplexRuby = $ruby => {
   $ruby = $( $ruby ).clone()
 
-  const $$rt = $ruby.find( 'rt' )
-
-  let $$rb = $ruby.find( 'rb' )
-  let $$ru = Array.from( $$rb )
+  const $$rtc = $ruby.find( 'rtc' )
+  let $$rb    = $ruby.find( 'rb' )
+  let $$ru    = Array.from( $$rb )
   let maxspan = $$rb.length
+  let $zhuyin
 
-  const $$rtc   = $ruby.find( 'rtc' )
-  const $zhuyin = $$rtc.filter( '.zhuyin' ).first()
+  Array.from( $$rtc ).map( simplifyRubyClass )
+  $zhuyin = $$rtc.filter( '.zhuyin' ).first()
 
   if ( $zhuyin.length ) {
     $$ru = Array.from( $zhuyin.find( 'rt' ))
@@ -127,19 +127,19 @@ export const createCustomRuby = $ruby => {
   return $( html )
 }
 
-export const simplifyRubyClass = $ruby => {
-  $ruby = $( $ruby )
+export const simplifyRubyClass = $target => {
+  $target = $( $target )
 
-  if ( $ruby.hasClass( 'pinyin' )) {
-    $ruby.addClass( 'romanization annotation' )
-  } else if ( $ruby.hasClass( 'romanization' )) {
-    $ruby.addClass( 'annotation' )
-  } else if ( $ruby.hasClass( 'mps' )) {
-    $ruby.addClass( 'zhuyin' )
-  } else if ( $ruby.hasClass( 'rightangle' )) {
-    $ruby.addClass( 'complex' )
+  if ( $target.hasClass( 'pinyin' )) {
+    $target.addClass( 'romanization annotation' )
+  } else if ( $target.hasClass( 'romanization' )) {
+    $target.addClass( 'annotation' )
+  } else if ( $target.hasClass( 'mps' )) {
+    $target.addClass( 'zhuyin' )
+  } else if ( $target.hasClass( 'rightangle' )) {
+    $target.addClass( 'complex' )
   }
-  return $ruby
+  return $target
 }
 
 export const createNormalRu = ( $$rb, $rt, attr={} ) => {
@@ -205,7 +205,7 @@ export const renderRuby = function( target='ruby' ) {
   let i = $$target.length
 
   traverse: while ( i-- ) {
-    const $this = $$target.eq( i )
+    const $this = simplifyRubyClass($$target.eq( i ))
 
     try {
       $this.replaceWith( $this.hasClass( 'complex' )

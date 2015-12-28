@@ -1,6 +1,7 @@
 
-import Core   from './core'
-import Locale from './locale'
+import Core    from './core'
+import Locale  from './locale'
+//import Typeset from './typeset'
 
 import './find'
 import './routine'

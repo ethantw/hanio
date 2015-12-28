@@ -1,20 +1,18 @@
 
 'use strict'
 
+import * as REGEX from './regex'
 import $    from 'cheerio'
 import Core from './core'
 import './init'
-import { UNICODE, TYPESET } from './regex'
 
 const Hanio = ( ...arg ) => new Core( ...arg )
-const html  = node => $.html( node ).replace( /<\/?fibrio\-text>/gi, '' )
 
-Object.assign( Hanio, {
-  fn: Core.prototype,
-  html,
-  UNICODE,
-  TYPESET,
-})
+const assignee = {
+  fn:   Core.fn,
+  html: node => $.html( node ).replace( /<\/?fibrio\-(root|text)>/gi, '' ),
+}
 
+Object.assign( Hanio, REGEX, assignee )
 export default Hanio
 

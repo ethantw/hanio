@@ -297,10 +297,10 @@ export const TYPESET = (function() {
         new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' ),
       ],
       punct:   null,
-      hanzi:   new RegExp( `(${rHan})+`, 'g' ),
-      western: new RegExp( `(${rLatn}|${rGk}|${rCy}|${rPt})+`, 'ig' ),
-      kana:    new RegExp( `(${rKana}|${rKanaS}|${rKanaH})+`, 'g' ),
-      eonmun:  new RegExp( `(${rEon}|${rEonH}|${rPt})+`, 'g' ),
+      hanzi:     new RegExp( `(${rHan})+`, 'g' ),
+      western:   new RegExp( `(${rLatn}|${rGk}|${rCy}|${rPt})+`, 'ig' ),
+      kana:      new RegExp( `(${rKana}|${rKanaS}|${rKanaH})+`, 'g' ),
+      eonmun:    new RegExp( `(${rEon}|${rEonH}|${rPt})+`, 'g' ),
     },
 
     /* Punctuation Rules (禁則)
@@ -379,4 +379,24 @@ export const TYPESET = (function() {
     ],
   }
 })()
+
+// Aliases:
+Object.assign( UNICODE, {
+  cjk:      UNICODE.hanzi,
+  greek:    UNICODE.ellinika,
+  cyrillic: UNICODE.Kirillica,
+  hangul:   UNICODE.eonmun,
+})
+
+Object.assign( TYPESET.char, {
+  cjk:      TYPESET.char.hanzi,
+  greek:    TYPESET.char.ellinika,
+  cyrillic: TYPESET.char.Kirillica,
+  hangul:   TYPESET.char.eonmum,
+})
+
+Object.assign( TYPESET.group, {
+  cjk:    TYPESET.group.hanzi,
+  hangul: TYPESET.group.eonmun,
+})
 

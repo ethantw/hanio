@@ -26,7 +26,7 @@ export default function( target='u, ins' ) {
       if ( $prev && $prev === $$target[ i-1 ] ) {
         $this::addClass( 'adjacent' )
       }
-    } while ( $prev::isIgnorable())
+    } while ($prev::isIgnorable())
   }
   return this
 }

@@ -3,7 +3,7 @@ import renderDecoLine from './decoline'
 import renderEm       from './em'
 import * as rubyFn    from './ruby'
 
-class Locale {
+export default class Locale {
   constructor( $context ) {
     this.context = $context
   }
@@ -28,6 +28,4 @@ Object.assign(
     renderEm,
   }
 )
-
-export default Locale
 

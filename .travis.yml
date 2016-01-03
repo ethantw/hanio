@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+- "stable"
+- "unstable"
+- "4.2"
+- "4.1"
+- "4.0"
+- "0.12"
+

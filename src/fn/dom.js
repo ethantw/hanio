@@ -32,6 +32,8 @@ const dom = {
   parent() {  return this::dom.prop( 'parent' )  },
   html()   {  return $.html( this )  },
 
+  isElmt () {  return this::dom.prop( 'type' ) === 'tag'  },
+
   empty() {
     if ( typeof this !== 'object' ) {
       return

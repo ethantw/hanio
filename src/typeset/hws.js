@@ -4,9 +4,9 @@ import {
   create, next, parent, isElmt
 }  from '../fn/dom'
 
-const $    = create
 const hws  = `\{\{hws: ${Date.now()}\}\}`
 const $hws = create( '<h-hws hidden> </h-hws>' )
+const $    = create
 
 const sharingSameParent = ( $a, $b ) =>
   $a && $b && $a::parent() === $b::parent()
@@ -54,28 +54,29 @@ export default function( strict=false ) {
   .addAvoid( avoid )
 
   // Basic situations:
-  // - 字a => 字<hws/>a
-  // - A字 => A<hws/>字
+  // - 字a => 字{{hws}}a => 字<hws/>a
+  // - A字 => A{{hws}}字 => A<hws/>字
   .replace( TYPESET.hws[ mode ][0], replacementFn )
   .replace( TYPESET.hws[ mode ][1], replacementFn )
 
-  // Re-Initialise the DOM in order to perform lazy search:
+  // Re-Initialise the DOM in order to properly perform
+  // lazy search w/o messy fake nodes:
   .initDOMWithHTML( this.html )
 
   // Deal with:
-  // - '<hws/>字<hws/>' => '字'
-  // - "<hws/>字<hws/>" => "字"
+  // - '{{hws}}字{{hws}}' => '字'
+  // - "{{hws}}字{{hws}}" => "字"
   .replace(
     new RegExp( `(['"])(?:${hws})+(.*?)(?:${hws})+\\1`, 'g' ),
     '$1$2$1'
   )
 
-  // Omit `<hws/>` preceding/following [‘字’] and [“字”],
+  // Omit `{{hws}}` preceding/following [‘字’] and [“字”],
   // See: https://github.com/ethantw/Han/issues/59
   .replace( new RegExp( `(?:${hws})+([‘“]+)`, 'g' ), '$1' )
   .replace( new RegExp( `([’”]+)(?:${hws})+`, 'g' ), '$1' )
 
-  // Convert text nodes `<hws/>` into real elements:
+  // Convert all `{{hws}}` labels into real elements:
   .replace(
     new RegExp( `(?:${hws})+`, 'g' ),
     () => $hws.clone()

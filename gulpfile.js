@@ -21,7 +21,7 @@ const banner  = (
 // Unified tasks
 gulp.task( 'default', [ 'build' ])
 gulp.task( 'build',   [ 'index.js', 'test' ])
-gulp.task( 'dev',     [ 'default', 'server', 'watch' ])
+gulp.task( 'dev',     [ 'default', 'watch' ])
 gulp.task( 'server',  () => server({ port: 3333 }))
 
 gulp.task( 'watch', () => {

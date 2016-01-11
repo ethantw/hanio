@@ -53,7 +53,9 @@ class Core {
    * root element.
    */
   get html() {
-    return this.finder.html
+    return this.root
+      .html()
+      .replace( /<\/?(?:hanio|fibrio)\-text>/gi, '' )
   }
 
   /**

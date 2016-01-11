@@ -283,6 +283,89 @@ desc( 'Normalisation', () => {
   })
 })
 
+desc( 'Typesets (inline)', () => {
+  let html, hio
+
+  it( 'Hanzi-Western script mixed spacing (HWS)', () => {
+    html = `測試test測試123測試`
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '測試<h-hws hidden> </h-hws>test<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>123<h-hws hidden> </h-hws>測試' )
+
+    html = '中文加上 <code>some code</code>，中文加上 <code>some code</code> 放在中間，<code>some code</code> 加上中文，一般的 English。'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '中文加上 <code>some code</code>，中文加上 <code>some code</code> 放在中間，<code>some code</code> 加上中文，一般的 English。' )
+
+    html = '中文加上<code>some code</code>，中文加上<code>some code</code>放在中間，<code>some code</code>加上中文，一般的English。'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '中文加上<h-hws hidden> </h-hws><code>some code</code>，中文加上<h-hws hidden> </h-hws><code>some code</code><h-hws hidden> </h-hws>放在中間，<code>some code</code><h-hws hidden> </h-hws>加上中文，一般的<h-hws hidden> </h-hws>English。' )
+
+    // Strict mode
+    html = '測試 test 測試 123 測試<code>測試 test測試。</code>'
+    hio  = Hanio( html ).renderHWS( true )
+    htmleq( hio.html, '測試<h-hws hidden> </h-hws>test<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>123<h-hws hidden> </h-hws>測試<code>測試 test測試。</code>' )
+
+    // With Biaodian
+    html = '測試，test測試123。'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '測試，test<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>123。' )
+
+    // Greek letters
+    html = '測試α測試β測試'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '測試<h-hws hidden> </h-hws>α<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>β<h-hws hidden> </h-hws>測試' )
+
+    // Cyrillic letters
+    html = 'я測試у測試ь測試в'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, 'я<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>у<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>ь<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>в' )
+
+    // All CJK-related blocks
+    html = 'A㐀a㘻a䶵a𠀀a𫠝a〇a⿸a⻍a⻰aのa'
+    hio  = Hanio( html ).renderHWS()
+    eq( hio.context.find( 'h-hws' ).length, 20 )
+
+    // Combining characters
+    html = '天然ê上好。荷Ὅ̴̊̌ηρος̃馬。貓К҉о҈ш҉к҈а҈咪。'
+    hio  = Hanio( html ).renderHWS()
+    eq( hio.context.find( 'h-hws' ).length, 6 )
+
+    // Cross-boundary
+    html = '去<u>Europe</u>旅行。'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '去<h-hws hidden> </h-hws><u>Europe</u><h-hws hidden> </h-hws>旅行。' )
+
+    // With comments or `<wbr>`
+    html = '去<!-- x -->Europe<wbr><!---->旅行。'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '去<h-hws hidden> </h-hws><!-- x -->Europe<h-hws hidden> </h-hws><wbr><!---->旅行。' )
+
+    // Edge cases
+    html = '測試¿測試?測試¡測試!為‘什’麼;為“什”麼?'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '測試<h-hws hidden> </h-hws>¿測試?<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>¡測試!<h-hws hidden> </h-hws>為‘什’麼;<h-hws hidden> </h-hws>為“什”麼?' )
+
+    html = `<p>單'引'號、單'引'號和雙"引"號和單'引'號和雙"引"號.`
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, `<p>單<h-hws hidden> </h-hws>'引'<h-hws hidden> </h-hws>號、單<h-hws hidden> </h-hws>'引'<h-hws hidden> </h-hws>號和雙<h-hws hidden> </h-hws>"引"<h-hws hidden> </h-hws>號和單<h-hws hidden> </h-hws>'引'<h-hws hidden> </h-hws>號和雙<h-hws hidden> </h-hws>"引"<h-hws hidden> </h-hws>號.</p>` )
+
+    html = `'單x引x號'"雙x引x號".`
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, `'單<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>引<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>號'"雙<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>引<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>號".` )
+
+    html = '你是咧com<u><i>啥物</i></u>plain啦！'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '你是咧<h-hws hidden> </h-hws>com<h-hws hidden> </h-hws><u><i>啥物</i></u><h-hws hidden> </h-hws>plain<h-hws hidden> </h-hws>啦！' )
+
+    html = '<u class="pn">美國</u><span lang="en">Chicago</span><em>是</em>這架飛船的目的地。'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '<u class="pn">美國</u><h-hws hidden> </h-hws><span lang="en">Chicago</span><h-hws hidden> </h-hws><em>是</em>這架飛船的目的地。' )
+
+    html = '<p>不知道是不是<u lang="en"><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u>你用「元件檢閱器」看看。</p>'
+    hio  = Hanio( html ).renderHWS()
+    htmleq( hio.html, '<p>不知道是不是<h-hws hidden> </h-hws><u lang="en"><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u><h-hws hidden> </h-hws>你用「元件檢閱器」看看。</p>' )
+  })
+})
+
 /*
 desc( '', () => {
   it( '', () => {

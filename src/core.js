@@ -22,30 +22,37 @@ class Core {
    */
   constructor( ...arg ) {
     const ohtml    = arg.pop()
-    const rootElmt = root( ohtml )
     const contextSelector = arg[0] || 'body'
     const condSelector    = arg[1] || 'html'
 
-    const context  = rootElmt.find( contextSelector )
-    const cond     = rootElmt.find( condSelector )
+    Object.assign( this, {
+      contextSelector,
+      condSelector,
+      ohtml,
+    })
+
+    this.initDOMWithHTML( ohtml )
+  }
+
+  initDOMWithHTML( html ) {
+    const rootElmt = root( html )
+    const context  = rootElmt.find( this.contextSelector )
+    const cond     = rootElmt.find( this.condSelector ) || rootElmt
+
+    cond.addClass( 'han-js-rendered' )
 
     Object.assign( this, {
+      // Initialise the text finder/processor (Fibrio):
+      finder:  Core.find( '' ),
+
       root:    rootElmt,
       context: context.length
         ? context
         : rootElmt,
-      contextSelector,
-      condSelector,
-      ohtml,
-      // Initialise the text finder/processor (Fibrio):
-      finder: Core.find( '' ),
     })
 
     this.finder.context = this.context
-    this.finder.ohtml   = this.ohtml
-
-    void ( cond.length ? cond : rootElmt )
-      .addClass( 'hanio-rendered han-js-rendered' )
+    return this
   }
 
   /**

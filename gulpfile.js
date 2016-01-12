@@ -4,7 +4,7 @@
 const gulp    = require( 'gulp' )
 const util    = require( 'gulp-util' )
 const concat  = require( 'gulp-concat-util' )
-const server  = require( 'gulp-connect' ).server
+//const server  = require( 'gulp-connect' ).server
 const webpack = require( 'webpack' )
 const mocha   = require( 'gulp-mocha' )
 
@@ -22,7 +22,7 @@ const banner  = (
 gulp.task( 'default', [ 'build' ])
 gulp.task( 'build',   [ 'index.js', 'test' ])
 gulp.task( 'dev',     [ 'default', 'watch' ])
-gulp.task( 'server',  () => server({ port: 3333 }))
+//gulp.task( 'server',  () => server({ port: 3333 }))
 
 gulp.task( 'watch', () => {
   gulp.watch( './src/**/*.js', [ 'build' ])

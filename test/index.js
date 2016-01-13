@@ -286,6 +286,9 @@ desc( 'Normalisation', () => {
 desc( 'Typesets (inline)', () => {
   let html, hio
 
+  it( 'Biaodian correction', () => {
+  })
+
   it( 'Hanzi-Western script mixed spacing (HWS)', () => {
     html = `測試test測試123測試`
     hio  = Hanio( html ).renderHWS()
@@ -363,6 +366,41 @@ desc( 'Typesets (inline)', () => {
     html = '<p>不知道是不是<u lang="en"><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u>你用「元件檢閱器」看看。</p>'
     hio  = Hanio( html ).renderHWS()
     htmleq( hio.html, '<p>不知道是不是<h-hws hidden> </h-hws><u lang="en"><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u><h-hws hidden> </h-hws>你用「元件檢閱器」看看。</p>' )
+  })
+
+  it( 'Hanging Biaodian', () => {
+    html = '點、點，點。點．'
+    hio  = Hanio( html ).renderHanging()
+    htmleq( hio.html, '點<h-hangable><h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">、</h-char></h-cs></h-hangable>點<h-hangable><h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">，</h-char></h-cs></h-hangable>點<h-hangable><h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">。</h-char></h-cs></h-hangable>點<h-hangable><h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">．</h-char></h-cs></h-hangable>' )
+
+    // Not hangable
+    html = '「標點。」'
+    hio  = Hanio( html ).renderHanging()
+    htmleq( hio.html, '「標點。」' )
+
+    html = '標點……。'
+    hio  = Hanio( html ).renderHanging()
+    htmleq( hio.html, '標點<h-hangable>……<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">。</h-char></h-cs></h-hangable>' )
+
+    html = '「標點」。'
+    hio  = Hanio( html ).renderHanging()
+    htmleq( hio.html, '「標點<h-hangable>」<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">。</h-char></h-cs></h-hangable>' )
+
+    html = '<span>「標『點』」</span>。'
+    hio  = Hanio( html ).renderHanging()
+    htmleq( hio.html, '<span>「標『點<h-hangable>』」<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">。</h-char></h-cs></h-hangable></span>' )
+  })
+
+  it( 'Consecutive Biaodian (Jiya)', () => {
+    html = '「字『字』？」字「字『字』」字？'
+    hio  = Hanio( html ).renderJiya()
+    htmleq( hio.html, '' )
+
+    html = '字、「字」字，（字）字……「字」。'
+    hio  = Hanio( html ).renderJiya()
+
+    html = '《書名》〈篇名〉（內容）'
+    hio  = Hanio( html ).renderJiya()
   })
 })
 

@@ -284,9 +284,9 @@ export const TYPESET = (function() {
       kana:   new RegExp( `(${rKana}|${rKana}|${rKanaH})`, 'g' ),
       eonmun: new RegExp( `(${rEon}|${rEonH})`, 'g' ),
 
-      latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
-      ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
-      kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
+      latin:       new RegExp( '(' + rLatn + ')', 'gi' ),
+      ellinika:    new RegExp( '(' + rGk + ')', 'gi' ),
+      kirillica:   new RegExp( '(' + rCy + ')', 'gi' ),
     },
 
     /* Word-level selectors (詞級選擇器)
@@ -297,20 +297,20 @@ export const TYPESET = (function() {
         new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' ),
       ],
       punct:   null,
-      hanzi:     new RegExp( `(${rHan})+`, 'g' ),
-      western:   new RegExp( `(${rLatn}|${rGk}|${rCy}|${rPt})+`, 'ig' ),
-      kana:      new RegExp( `(${rKana}|${rKanaS}|${rKanaH})+`, 'g' ),
-      eonmun:    new RegExp( `(${rEon}|${rEonH}|${rPt})+`, 'g' ),
+      hanzi:   new RegExp( `(${rHan})+`, 'g' ),
+      western: new RegExp( `(${rLatn}|${rGk}|${rCy}|${rPt})+`, 'gi' ),
+      kana:    new RegExp( `(${rKana}|${rKanaS}|${rKanaH})+`, 'g' ),
+      eonmun:  new RegExp( `(${rEon}|${rEonH}|${rPt})+`, 'g' ),
     },
 
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging: new RegExp( `(${rBdClose}*|[…⋯]*)([、，。．])(?!${rBdEnd}+)`, 'ig' ),
-      touwei:  new RegExp( `(${rBdOpen}+)(${rChar})(${rBdEnd}+)`, 'ig' ),
-      tou:     new RegExp( `(${rBdOpen}+)(${rChar})`, 'ig' ),
-      wei:     new RegExp( `(${rChar})(${rBdEnd}+)`, 'ig' ),
-      middle:  new RegExp( `(${rChar})(${rBdMid})(${rChar})`, 'ig' ),
+      hanging: new RegExp( `(${rBdClose}*|[…⋯]*)([、，。．])(?!${rBdEnd}+)`, 'gi' ),
+      touwei:  new RegExp( `(${rBdOpen}+)(${rChar})(${rBdEnd}+)`, 'gi' ),
+      tou:     new RegExp( `(${rBdOpen}+)(${rChar})`, 'gi' ),
+      wei:     new RegExp( `(${rChar})(${rBdEnd}+)`, 'gi' ),
+      middle:  new RegExp( `(${rChar})(${rBdMid})(${rChar})`, 'gi' ),
     },
 
     zhuyin: {
@@ -324,13 +324,13 @@ export const TYPESET = (function() {
      */
     hws: {
       base: [
-        new RegExp( `(${rHan})(${rAlph}|${rPtOpen})`, 'ig' ),
-        new RegExp( `(${rAlph}|${rPtEnd})(${rHan})`, 'ig' ),
+        new RegExp( `(${rHan})(${rAlph}|${rPtOpen})`, 'gi' ),
+        new RegExp( `(${rAlph}|${rPtEnd})(${rHan})`, 'gi' ),
       ],
 
       strict: [
-        new RegExp( `(${rHan})${rWhite}?(${rAlph}|${rPtOpen})`, 'ig' ),
-        new RegExp( `(${rAlph}|${rPtEnd})${rWhite}?(${rHan})`, 'ig' ),
+        new RegExp( `(${rHan})${rWhite}?(${rAlph}|${rPtOpen})`, 'gi' ),
+        new RegExp( `(${rAlph}|${rPtEnd})${rWhite}?(${rHan})`, 'gi' ),
       ],
     },
 

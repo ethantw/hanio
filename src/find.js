@@ -34,7 +34,7 @@ const createBdChar = char => {
       ? 'bd-close bd-end'
       : char.match( TYPESET.char.biaodian.end )
       ? 'bd-end'
-      : char.match( new RegExp( UNICODE.biaodian.liga ))
+      : char.match( TYPESET.char.biaodian.liga )
       ? 'bd-liga'
       : ''
     }">${ char }</h-char>`

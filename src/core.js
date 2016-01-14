@@ -62,7 +62,7 @@ class Core {
   get html() {
     return this.root
       .html()
-      .replace( /<\/?(?:hanio|fibrio)\-text>/gi, '' )
+      .replace( /<\/?(?:hanio|fibrio)\-(fake|text)>/gi, '' )
   }
 
   /**

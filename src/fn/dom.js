@@ -136,6 +136,10 @@ const dom = {
     return $( html )
   },
 
+  createFakeElmt( html ) {
+    return $( `<hanio-fake>${ html }</hanio-fake>` )
+  },
+
   createText( text ) {
     return $( `<hanio-text>${ text }</hanio-text>` )
   },

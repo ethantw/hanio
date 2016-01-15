@@ -35,20 +35,20 @@ class Core {
   }
 
   initDOMWithHTML( html ) {
-    const rootElmt = root( html )
-    const context  = rootElmt.find( this.contextSelector )
-    const cond     = rootElmt.find( this.condSelector ) || rootElmt
+    const $root    = root( html )
+    const $context = $root.find( this.contextSelector )
+    const $cond    = $root.find( this.condSelector ) || $root
 
-    cond.addClass( 'han-js-rendered' )
+    $cond.addClass( 'han-js-rendered' )
 
     Object.assign( this, {
       // Initialise the text finder/processor (Fibrio):
       finder:  Core.find( '' ),
 
-      root:    rootElmt,
-      context: context.length
-        ? context
-        : rootElmt,
+      root:    $root,
+      context: $context.length
+        ? $context
+        : $root,
     })
 
     this.finder.context = this.context

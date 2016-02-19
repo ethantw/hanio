@@ -371,7 +371,7 @@ desc( 'Typesets (inline)', () => {
   it( 'Hanging Biaodian', () => {
     html = '點、點，點。點．'
     hio  = Hanio( html ).renderHanging()
-    htmleq( hio.html, '點<h-hangable><h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">、</h-char></h-cs></h-hangable>點<h-hangable><h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">，</h-char></h-cs></h-hangable>點<h-hangable><h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">。</h-char></h-cs></h-hangable>點<h-hangable><h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">．</h-char></h-cs></h-hangable>' )
+    htmleq( hio.html, '點<h-char unicode="3001" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>、</h-inner></h-char>點<h-char unicode="ff0c" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>，</h-inner></h-char>點<h-char unicode="3002" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>。</h-inner></h-char>點<h-char unicode="ff0e" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>．</h-inner></h-char>' )
 
     // Not hangable
     html = '「標點。」'
@@ -380,15 +380,27 @@ desc( 'Typesets (inline)', () => {
 
     html = '標點……。'
     hio  = Hanio( html ).renderHanging()
-    htmleq( hio.html, '標點<h-hangable>……<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">。</h-char></h-cs></h-hangable>' )
+    htmleq( hio.html, '標點……<h-char unicode="3002" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>。</h-inner></h-char>' )
+
+    html = '標點——。'
+    hio  = Hanio( html ).renderHanging()
+    htmleq( hio.html, '標點——<h-char unicode="3002" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>。</h-inner></h-char>' )
 
     html = '「標點」。'
     hio  = Hanio( html ).renderHanging()
-    htmleq( hio.html, '「標點<h-hangable>」<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">。</h-char></h-cs></h-hangable>' )
+    htmleq( hio.html, '「標點」<h-char unicode="3002" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>。</h-inner></h-char>' )
 
     html = '<span>「標『點』」</span>。'
     hio  = Hanio( html ).renderHanging()
-    htmleq( hio.html, '<span>「標『點<h-hangable>』」<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">。</h-char></h-cs></h-hangable></span>' )
+    htmleq( hio.html, '<span>「標『點』」</span><h-char unicode="3002" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>。</h-inner></h-char>' )
+
+    html = '<span>「標『點』</span>」。'
+    hio  = Hanio( html ).renderHanging()
+    htmleq( hio.html, '<span>「標『點』</span>」<h-char unicode="3002" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>。</h-inner></h-char>' )
+
+    html = '<p><em>《書名》〈篇名〉（內容）「『好』、不好」</em>'
+    hio  = Hanio( html ).renderEm().renderHanging()
+    htmleq( hio.html, '<p><em><h-jinze class="tou"><h-char unicode="300a" class="biaodian cjk bd-open">《</h-char><h-char class="eastasian cjk hanzi">書</h-char></h-jinze><h-jinze class="wei"><h-char class="eastasian cjk hanzi">名</h-char><h-char unicode="300b" class="biaodian cjk bd-close bd-end">》</h-char></h-jinze><h-jinze class="tou"><h-char unicode="3008" class="biaodian cjk bd-open">〈</h-char><h-char class="eastasian cjk hanzi">篇</h-char></h-jinze><h-jinze class="wei"><h-char class="eastasian cjk hanzi">名</h-char><h-char unicode="3009" class="biaodian cjk bd-close bd-end">〉</h-char></h-jinze><h-jinze class="tou"><h-char unicode="ff08" class="biaodian cjk bd-open">（</h-char><h-char class="eastasian cjk hanzi">內</h-char></h-jinze><h-jinze class="wei"><h-char class="eastasian cjk hanzi">容</h-char><h-char unicode="ff09" class="biaodian cjk bd-close bd-end">）</h-char></h-jinze><h-jinze class="touwei"><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char><h-char unicode="300e" class="biaodian cjk bd-open">『</h-char><h-char class="eastasian cjk hanzi">好</h-char><h-char unicode="300f" class="biaodian cjk bd-close bd-end">』</h-char><h-char unicode="3001" class="biaodian cjk bd-end hangable"><h-cs hidden> </h-cs><h-inner>、</h-inner></h-char></h-jinze><h-cs hidden class="jinze-outer hangable-outer"> </h-cs><h-char class="eastasian cjk hanzi">不</h-char><h-jinze class="wei"><h-char class="eastasian cjk hanzi">好</h-char><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char></h-jinze></em></p>' )
   })
 
   it( 'Consecutive Biaodian (Jiya)', () => {

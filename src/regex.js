@@ -309,7 +309,7 @@ export const TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging: new RegExp( `(${rBdClose}*|[…⋯]*)([、，。．])(?!${rBdEnd}+)`, 'gi' ),
+      hanging: new RegExp( `([、，。．])(?!${rBdEnd}+)`, 'gi' ),
       touwei:  new RegExp( `(${rBdOpen}+)(${rChar})(${rBdEnd}+)`, 'gi' ),
       tou:     new RegExp( `(${rBdOpen}+)(${rChar})`, 'gi' ),
       wei:     new RegExp( `(${rChar})(${rBdEnd}+)`, 'gi' ),

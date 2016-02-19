@@ -20,5 +20,6 @@ Typeset.fn.correctBasicBD = Typeset.fn.correctBiaodian
 Object.assign( Typeset.fn, {
   renderHWS,
   renderHanging,
+  renderJiya,
 })
 

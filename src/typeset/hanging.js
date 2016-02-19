@@ -7,17 +7,26 @@ const $ = create
 const HANGING_AVOID = 'textarea, code, kbd, samp, pre, h-cs, h-char.hangable'
 const get$hangableInnerHTML = biaodian => `<h-cs hidden> </h-cs><h-inner>${biaodian}</h-inner>`
 
+const rhangable = TYPESET.jinze.hanging
+
 export default function() {
   this
   .addAvoid( HANGING_AVOID )
   .replace(
-    TYPESET.jinze.hanging,
+    rhangable,
     portion => {
       const $node = portion.node
       let $elmt   = $($node::parent())
 
       const beenWrapped = $elmt.is( 'h-char[unicode], h-char[unicode] *' )
       const biaodian    = portion.text
+
+      if (!rhangable.test( biaodian )) {
+        this
+        .initDOMWithHTML( this.html )
+        .renderHanging()
+        return null
+      }
 
       if ($elmt.is( 'h-jinze, h-jinze *' )) {
         let $jinze = $elmt

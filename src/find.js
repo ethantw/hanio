@@ -4,12 +4,13 @@ import Core       from './core'
 import { create } from './fn/dom'
 import { UNICODE, TYPESET } from './regex.js'
 
-const createBdGroup = ( portion, mat ) => {
+export const createBdGroup = ( portion, mat ) => {
   const $elmt = create(
     `<h-char-group class="biaodian cjk">${
       portion.text
     }</h-char-group>`
   )
+
   return portion.idx === 0 && portion.isEnd
     ? $elmt
     : $elmt.addClass(
@@ -23,7 +24,7 @@ const createBdGroup = ( portion, mat ) => {
     )
 }
 
-const createBdChar = char => {
+export const createBdChar = char => {
   return create(
     `<h-char unicode="${
       char.charCodeAt( 0 ).toString( 16 )
@@ -103,8 +104,7 @@ Object.assign( Fibrio.fn, {
       western:  all, // Include Latin, Greek and Cyrillic alphabet
     }, option )
 
-    this
-    .addAvoid( GROUP_AVOID )
+    this.addAvoid( GROUP_AVOID )
 
     if ( option.biaodian ) {
       this.replace(

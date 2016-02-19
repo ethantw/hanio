@@ -35,7 +35,6 @@
     "gulp-connect": "^2.2.0",
     "gulp-mocha": "^2.2.0",
     "gulp-util": "^3.0.7",
-    "han-css": "^3.2.7",
     "jsdom": "^7.2.1",
     "mocha": "^2.3.4",
     "special-entities": "^1.0.2",

@@ -37,6 +37,8 @@ export const createBdChar = char => {
       ? 'bd-end'
       : char.match( TYPESET.char.biaodian.liga )
       ? 'bd-liga'
+      : char.match( TYPESET.char.biaodian.middle )
+      ? 'bd-middle'
       : ''
     }">${ char }</h-char>`
   )

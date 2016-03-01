@@ -345,15 +345,15 @@ desc( 'Typesets (inline)', () => {
     // Edge cases
     html = '測試¿測試?測試¡測試!為‘什’麼;為“什”麼?'
     hio  = Hanio( html ).renderHWS()
-    htmleq( hio.html, '測試<h-hws hidden> </h-hws>¿測試?<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>¡測試!<h-hws hidden> </h-hws>為‘什’麼;<h-hws hidden> </h-hws>為“什”麼?' )
+    htmleq( hio.html, '測試<h-hws hidden> </h-hws>¿測試?<h-hws hidden> </h-hws>測試<h-hws hidden> </h-hws>¡測試!<h-hws hidden> </h-hws>為<h-hws hidden class="quote-outer"> </h-hws>‘什’<h-hws hidden class="quote-outer"> </h-hws>麼;<h-hws hidden> </h-hws>為<h-hws hidden class="quote-outer"> </h-hws>“什”<h-hws hidden class="quote-outer"> </h-hws>麼?' )
 
     html = `<p>單'引'號、單'引'號和雙"引"號和單'引'號和雙"引"號.`
     hio  = Hanio( html ).renderHWS()
-    htmleq( hio.html, `<p>單<h-hws hidden> </h-hws>'引'<h-hws hidden> </h-hws>號、單<h-hws hidden> </h-hws>'引'<h-hws hidden> </h-hws>號和雙<h-hws hidden> </h-hws>"引"<h-hws hidden> </h-hws>號和單<h-hws hidden> </h-hws>'引'<h-hws hidden> </h-hws>號和雙<h-hws hidden> </h-hws>"引"<h-hws hidden> </h-hws>號.</p>` )
+    htmleq( hio.html, `<p>單<h-hws hidden> </h-hws>'<h-hws hidden class="quote-inner"> </h-hws>引<h-hws hidden class="quote-inner"> </h-hws>'<h-hws hidden> </h-hws>號、單<h-hws hidden> </h-hws>'<h-hws hidden class="quote-inner"> </h-hws>引<h-hws hidden class="quote-inner"> </h-hws>'<h-hws hidden> </h-hws>號和雙<h-hws hidden> </h-hws>"<h-hws hidden class="quote-inner"> </h-hws>引<h-hws hidden class="quote-inner"> </h-hws>"<h-hws hidden> </h-hws>號和單<h-hws hidden> </h-hws>'<h-hws hidden class="quote-inner"> </h-hws>引<h-hws hidden class="quote-inner"> </h-hws>'<h-hws hidden> </h-hws>號和雙<h-hws hidden> </h-hws>"<h-hws hidden class="quote-inner"> </h-hws>引<h-hws hidden class="quote-inner"> </h-hws>"<h-hws hidden> </h-hws>號.</p>` )
 
     html = `'單x引x號'"雙x引x號".`
     hio  = Hanio( html ).renderHWS()
-    htmleq( hio.html, `'單<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>引<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>號'"雙<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>引<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>號".` )
+    htmleq( hio.html, `'<h-hws hidden class="quote-inner"> </h-hws>單<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>引<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>號<h-hws hidden class="quote-inner"> </h-hws>'"<h-hws hidden class="quote-inner"> </h-hws>雙<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>引<h-hws hidden> </h-hws>x<h-hws hidden> </h-hws>號<h-hws hidden class="quote-inner"> </h-hws>".` )
 
     html = '你是咧com<u><i>啥物</i></u>plain啦！'
     hio  = Hanio( html ).renderHWS()

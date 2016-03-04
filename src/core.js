@@ -100,16 +100,17 @@ class Core {
 
     routine
     .forEach( method => {
-      try {
-        if ( typeof method === 'string' ) {
-          this[ method ]()
-        } else if (
-          Array.isArray( method ) &&
-          typeof method[0] === 'string'
-        ) {
-          this[ method.shift() ]( ...method )
-        }
-      } catch ( e ) {}
+      if (
+        typeof method === 'string' &&
+        typeof this[ method ] === 'function'
+      ) {
+        this[ method ]()
+      } else if (
+        Array.isArray( method ) &&
+        typeof this[ method[0] ] === 'function'
+      ) {
+        this[ method.shift() ]( ...method )
+      }
     })
     return returnHTML === true
       ? this.html

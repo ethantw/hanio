@@ -1,10 +1,20 @@
 
-import Fibrio     from 'fibrio'
-import Core       from './core'
-import { create } from './fn/dom'
+import Fibrio from 'fibrio'
+import Core   from './core'
+import { create, isElmt } from './fn/dom'
 import { UNICODE, TYPESET } from './regex.js'
 
-export const createBdGroup = ( portion, mat ) => {
+const [ JINZE_AVOID, GROUP_AVOID, CHAR_AVOID ] = [
+  'h-jinze',
+  'h-char-group, h-word',
+  'h-char',
+]
+
+const charWrapper = ( a, b ) => (
+    a::isElmt() || typeof a === 'function'
+  ) ? a : b
+
+export const createBDGroup = portion => {
   const $elmt = create(
     `<h-char-group class="biaodian cjk">${
       portion.text
@@ -16,37 +26,39 @@ export const createBdGroup = ( portion, mat ) => {
     : $elmt.addClass(
       `portion ${
         portion.idx === 0
-        ? 'is-first isFirst'
+        ? 'is-first'
         : portion.isEnd
-        ? 'is-end isEnd'
-        : 'is-inner isInner'
+        ? 'is-end'
+        : 'is-inner'
       }`
     )
 }
 
-export const createBdChar = char => {
-  return create(
-    `<h-char unicode="${
-      char.charCodeAt( 0 ).toString( 16 )
-    }" class="biaodian cjk ${
-      char.match( TYPESET.char.biaodian.open )
-      ? 'bd-open'
-      : char.match( TYPESET.char.biaodian.close )
-      ? 'bd-close bd-end'
-      : char.match( TYPESET.char.biaodian.end )
-      ? 'bd-end'
-      : char.match( TYPESET.char.biaodian.liga )
-      ? 'bd-liga'
-      : char.match( TYPESET.char.biaodian.middle )
-      ? 'bd-middle'
-      : ''
-    }">${ char }</h-char>`
-  )
-}
+export const createBDChar = char => create(
+  `<h-char unicode="${
+    char.charCodeAt( 0 ).toString( 16 )
+  }" class="biaodian cjk ${
+    getBDType( char )
+  }">${ char }</h-char>`
+)
 
-const JINZE_AVOID = 'h-jinze'
-const GROUP_AVOID = 'h-hangable, h-char-group, h-word'
-const CHAR_AVOID  = 'h-char'
+export const getBDType = char => (
+  char.match( TYPESET.char.biaodian.open )
+    ? 'bd-open'
+    : char.match( TYPESET.char.biaodian.close )
+    ? 'bd-close bd-end'
+    : char.match( TYPESET.char.biaodian.end )
+      ? (
+        /(?:\u3001|\u3002|\uff0c)/i.test( char )
+        ? 'bd-end bd-cop'
+        : 'bd-end'
+      )
+    : char.match( TYPESET.char.biaodian.liga )
+    ? 'bd-liga'
+    : char.match( TYPESET.char.biaodian.middle )
+    ? 'bd-middle'
+    : ''
+)
 
 Object.assign( Fibrio.fn, {
   end() {
@@ -110,9 +122,9 @@ Object.assign( Fibrio.fn, {
 
     if ( option.biaodian ) {
       this.replace(
-        TYPESET.group.biaodian[0], createBdGroup
+        TYPESET.group.biaodian[0], createBDGroup
       ).replace(
-        TYPESET.group.biaodian[1], createBdGroup
+        TYPESET.group.biaodian[1], createBDGroup
       )
     }
 
@@ -152,6 +164,7 @@ Object.assign( Fibrio.fn, {
     const { all, eastasian, western, hanzi } = option
 
     option = Object.assign({
+      avoid:     true,
       biaodian:  all,
       punct:     all,
       hanzi:     all || eastasian, // Include Kana
@@ -163,67 +176,99 @@ Object.assign( Fibrio.fn, {
       kirillica: all || western,
     }, option )
 
-    this.addAvoid( CHAR_AVOID )
+    if ( option.avoid ) {
+      this.addAvoid( CHAR_AVOID )
+    }
 
     if ( option.biaodian ) {
       this.replace(
         TYPESET.char.biaodian.all,
-        portion => createBdChar( portion.text )
+        charWrapper(
+          option.biaodian,
+          portion => createBDChar( portion.text )
+        )
       ).replace(
         TYPESET.char.biaodian.liga,
-        portion => createBdChar( portion.text )
+        charWrapper(
+          option.biaodian,
+          portion => createBDChar( portion.text )
+        )
       )
     }
 
     if ( option.hanzi || option.cjk ) {
       this.wrap(
         TYPESET.char.kana,
-        `<h-char class="eastasian cjk kana"></h-char>`
+        charWrapper(
+          option.hanzi || option.cjk,
+          `<h-char class="eastasian cjk kana"></h-char>`
+        )
       ).wrap(
         TYPESET.char.hanzi,
+        charWrapper(
+          option.hanzi || option.cjk,
         `<h-char class="eastasian cjk hanzi"></h-char>`
+        )
       )
     }
 
     if ( option.punct ) {
       this.wrap(
         TYPESET.char.punct.all,
-        `<h-char class="punct"></h-char>`
+        charWrapper(
+          option.punct,
+          `<h-char class="punct"></h-char>`
+        )
       )
     }
 
     if ( option.latin ) {
       this.wrap(
         TYPESET.char.latin,
-        `<h-char class="alphabet western latin"></h-char>`
+        charWrapper(
+          option.latin,
+          `<h-char class="alphabet western latin"></h-char>`
+        )
       )
     }
 
     if ( option.ellinika || option.greek ) {
       this.wrap(
         TYPESET.char.ellinika,
-        `<h-char class="alphabet western ellinika greek"></h-char>`
+        charWrapper(
+          option.ellinika || option.greek,
+          `<h-char class="alphabet western ellinika greek"></h-char>`
+        )
       )
     }
 
     if ( option.kirillica || option.cyrillic ) {
       this.wrap(
         TYPESET.char.kirillica,
-        `<h-char class="alphabet western kirillica cyrillic"></h-char>`
+        charWrapper(
+          option.kirillica || option.cyrillic,
+          `<h-char class="alphabet western kirillica cyrillic"></h-char>`
+        )
       )
     }
 
     if ( option.kana ) {
       this.wrap(
         TYPESET.char.kana,
-        `<h-char class="eastasian cjk kana"></h-char>`
+        charWrapper(
+          option.kana,
+          `<h-char class="eastasian cjk kana"></h-char>`
+        )
       )
     }
 
     if ( option.eonmum || option.hangul ) {
       this.wrap(
         TYPESET.char.eonmum,
-        `<h-char class="eastasian eonmum hangul"></h-char>`
+        charWrapper(
+          option.eonmum || option.hangul,
+          `<h-char class="eastasian eonmum hangul"></h-char>`
+        )
       )
     }
 

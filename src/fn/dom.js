@@ -29,10 +29,29 @@ const dom = {
   first()  {  return this::dom.content()[0]  },
   prev()   {  return this::dom.prop( 'prev' )  },
   next()   {  return this::dom.prop( 'next' )  },
-  parent() {  return this::dom.prop( 'parent' )  },
   html()   {  return $.html( this )  },
 
   isElmt () {  return this::dom.prop( 'type' ) === 'tag'  },
+
+  parent( selector ) {
+    let $target = this
+
+    return selector
+      ? (() => {
+        while (!$target::dom.matches( selector )) {
+          if (
+            !$target ||
+            !$( $target ).parent().length
+          ) {
+            $target = {}
+            break
+          }
+          $target = $( $target ).parent()
+        }
+        return $target
+      })()
+      : this::dom.prop( 'parent' )
+  },
 
   empty() {
     if ( typeof this !== 'object' ) {

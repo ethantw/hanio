@@ -4,20 +4,22 @@ import Core from './core'
 const ROUTINE = [
   // Classify the root element as `.han-rendered`:
   'initCond',
-   // Address element normalisation:
+
+  // Normalising text-level semantic elements:
   'renderElmt',
 
   // Handle Biaodian:
-  'renderHanging',
   'renderJiya',
+  'renderHanging',
 
   // Address Hanzi and Western script mixed spacing:
   'renderHWS',
 
-  // Address Basic Biaodian correction in Firefox:
+  // Address Biaodian correction:
   'correctBasicBD',
 
-  // Address presentational correction to combining ligatures:
+  // Address presentational correction to
+  // combining ligatures, etc:
   // 'substCombLigaWithPUA',
 ]
 

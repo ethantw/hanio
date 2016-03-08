@@ -234,12 +234,12 @@ export const TYPESET = (function() {
   const rPtSing  = UNICODE.punct.sing
   const rPt      = rPtOpen + '|' + rPtEnd + '|' + rPtMid
 
-  const rBdOpen  = UNICODE.biaodian.open
-  const rBdClose = UNICODE.biaodian.close
-  const rBdEnd   = UNICODE.biaodian.end
-  const rBdMid   = UNICODE.biaodian.middle
-  const rBdLiga  = UNICODE.biaodian.liga + '{2}'
-  const rBd      = rBdOpen + '|' + rBdEnd + '|' + rBdMid
+  const rBDOpen  = UNICODE.biaodian.open
+  const rBDClose = UNICODE.biaodian.close
+  const rBDEnd   = UNICODE.biaodian.end
+  const rBDMid   = UNICODE.biaodian.middle
+  const rBDLiga  = UNICODE.biaodian.liga + '{2}'
+  const rBD      = rBDOpen + '|' + rBDEnd + '|' + rBDMid
 
   const rKana  = UNICODE.kana.base + UNICODE.kana.combine + '?'
   const rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?'
@@ -276,11 +276,11 @@ export const TYPESET = (function() {
       },
 
       biaodian: {
-        all:   new RegExp( '(' + rBd + ')', 'g' ),
-        open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
-        close: new RegExp( '(' + rBdClose + ')', 'g' ),
-        end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
-        liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
+        all:   new RegExp( '(' + rBD + ')', 'g' ),
+        open:  new RegExp( '(' + rBDOpen + ')', 'g' ),
+        close: new RegExp( '(' + rBDClose + ')', 'g' ),
+        end:   new RegExp( '(' + rBDEnd + ')', 'g' ),
+        liga:  new RegExp( '(' + rBDLiga + ')', 'g' ),
       },
 
       hanzi:  new RegExp( `(${rHan})`, 'g' ),
@@ -296,8 +296,8 @@ export const TYPESET = (function() {
      */
     group: {
       biaodian: [
-        new RegExp( '((' + rBd + '){2,})', 'g' ),
-        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' ),
+        new RegExp( '((' + rBD + '){2,})', 'g' ),
+        new RegExp( '(' + rBDLiga + rBDOpen + ')', 'g' ),
       ],
       punct:   null,
       hanzi:   new RegExp( `(${rHan})+`, 'g' ),
@@ -309,11 +309,11 @@ export const TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging: new RegExp( `${rWhite}*([、，。．])(?!${rBdEnd}+)`, 'gi' ),
-      touwei:  new RegExp( `(${rBdOpen}+)(${rChar})(${rBdEnd}+)`, 'gi' ),
-      tou:     new RegExp( `(${rBdOpen}+)(${rChar})`, 'gi' ),
-      wei:     new RegExp( `(${rChar})(${rBdEnd}+)`, 'gi' ),
-      middle:  new RegExp( `(${rChar})(${rBdMid})(${rChar})`, 'gi' ),
+      hanging: new RegExp( `${rWhite}*([、，。．])(?!${rBDEnd}+)`, 'gi' ),
+      touwei:  new RegExp( `(${rBDOpen}+)(${rChar})(${rBDEnd}+)`, 'gi' ),
+      tou:     new RegExp( `(${rBDOpen}+)(${rChar})`, 'gi' ),
+      wei:     new RegExp( `(${rChar})(${rBDEnd}+)`, 'gi' ),
+      middle:  new RegExp( `(${rChar})(${rBDMid})(${rChar})`, 'gi' ),
     },
 
     zhuyin: {

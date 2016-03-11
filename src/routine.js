@@ -16,7 +16,7 @@ const ROUTINE = [
   'renderHWS',
 
   // Address Biaodian correction:
-  'correctBasicBD',
+  'correctBiaodian',
 
   // Address presentational correction to
   // combining ligatures, etc:

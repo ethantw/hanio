@@ -283,11 +283,25 @@ desc( 'Normalisation', () => {
   })
 })
 
-desc( 'Typesets (inline)', () => {
+desc( 'Typography', () => {
   let html, hio
 
   it( 'Biaodian correction', () => {
+    html = `「『內容』内容」‘內“內容”容’《內容》〈內容〉（內〔內容〕容）`
+    hio  = Hanio( html ).correctBiaodian()
+    eq( hio.context.find( '.punct.biaodian' ).length, 4 )
+
+    hio  = Hanio( html ).render([
+      'renderJiya', 'renderHanging', 'renderHWS',
+      'correctBiaodian'
+    ])
+    eq( hio.context.find( '.punct.biaodian' ).length, 4 )
+    htmleq( hio.html, '<h-char unicode="300c" class="biaodian cjk bd-open bd-jiya bd-consecutive"><h-inner>「</h-inner></h-char><h-char unicode="300e" class="biaodian cjk bd-open bd-jiya bd-consecutive end-portion" prev="bd-open"><h-inner>『</h-inner></h-char>內容<h-char unicode="300f" class="biaodian cjk bd-close bd-end bd-jiya"><h-inner>』</h-inner></h-char>内容<h-char unicode="300d" class="biaodian cjk bd-close bd-end bd-jiya"><h-inner>」</h-inner></h-char><h-char unicode="2018" class="biaodian cjk bd-middle bd-open punct western">‘</h-char>內<h-hws hidden class="quote-outer"> </h-hws><h-char unicode="201c" class="biaodian cjk bd-middle bd-open punct western">“</h-char>內容<h-char unicode="201d" class="biaodian cjk bd-middle bd-close bd-end punct western">”</h-char><h-hws hidden class="quote-outer"> </h-hws>容<h-char unicode="2019" class="biaodian cjk bd-middle bd-close bd-end punct western">’</h-char><h-char unicode="300a" class="biaodian cjk bd-open bd-jiya"><h-inner>《</h-inner></h-char>內容<h-char unicode="300b" class="biaodian cjk bd-close bd-end bd-jiya bd-consecutive"><h-inner>》</h-inner></h-char><h-char unicode="3008" class="biaodian cjk bd-open bd-jiya bd-consecutive end-portion" prev="bd-close bd-end"><h-inner>〈</h-inner></h-char>內容<h-char unicode="3009" class="biaodian cjk bd-close bd-end bd-jiya bd-consecutive"><h-inner>〉</h-inner></h-char><h-char unicode="ff08" class="biaodian cjk bd-open bd-jiya bd-consecutive end-portion" prev="bd-close bd-end"><h-inner>（</h-inner></h-char>內<h-char unicode="3014" class="biaodian cjk bd-open bd-jiya"><h-inner>〔</h-inner></h-char>內容<h-char unicode="3015" class="biaodian cjk bd-close bd-end bd-jiya"><h-inner>〕</h-inner></h-char>容<h-char unicode="ff09" class="biaodian cjk bd-close bd-end bd-jiya"><h-inner>）</h-inner></h-char>' )
   })
+})
+
+desc( 'Typesets (inline)', () => {
+  let html, hio
 
   it( 'Hanzi-Western script mixed spacing (HWS)', () => {
     html = `測試test測試123測試`

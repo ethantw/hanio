@@ -30,8 +30,7 @@ const dom = {
   prev()   {  return this::dom.prop( 'prev' )  },
   next()   {  return this::dom.prop( 'next' )  },
   html()   {  return $.html( this )  },
-
-  isElmt () {  return this::dom.prop( 'type' ) === 'tag'  },
+  isElmt() {  return this::dom.prop( 'type' ) === 'tag'  },
 
   parent( selector ) {
     let $target = this

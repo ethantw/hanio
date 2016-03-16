@@ -19,6 +19,10 @@ const nmlize = html => hexa( html )
   //.toLowerCase()
 
 desc( 'Basic', () => {
+  it( 'Constructor', () => {
+    eq( Hanio( `hello` ) instanceof Hanio.core, true )
+  })
+
   const html = (
 `<!doctype html>
 <html lang="zh">

@@ -5,7 +5,7 @@ import { createBDChar } from '../find'
 
 const $ = create
 
-const arGroupBD = TYPESET.group.biaodian
+const CONSECUTIVE_BD_AR = TYPESET.consecutive.biaodian
 const JIYA_CLASS = 'bd-jiya'
 const JIYA_AVOID = 'textarea, code, kbd, samp, pre, h-cs, h-char.bd-jiya'
 const CONSECUTIVE_CLASS = 'bd-consecutive'
@@ -123,8 +123,9 @@ export default function() {
       biaodian: charifyBiaodian,
     })
     .removeAvoid( 'h-char.bd-jiya' )
-    .replace( arGroupBD[0], locateConsecutiveBD )
-    .replace( arGroupBD[1], locateConsecutiveBD )
+    .replace( CONSECUTIVE_BD_AR[0], locateConsecutiveBD )
+    .replace( CONSECUTIVE_BD_AR[1], locateConsecutiveBD )
+    .replace( CONSECUTIVE_BD_AR[2], locateConsecutiveBD )
   )
 }
 

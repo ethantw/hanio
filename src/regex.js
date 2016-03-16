@@ -296,14 +296,23 @@ export const TYPESET = (function() {
      */
     group: {
       biaodian: [
-        new RegExp( '((' + rBD + '){2,})', 'g' ),
-        new RegExp( '(' + rBDLiga + rBDOpen + ')', 'g' ),
+        new RegExp( '(' + rBDLiga + '(' + rBDOpen + '|' + rBDEnd + ')' + '+)', 'g' ),
+        new RegExp( '(' + rBDEnd + rBDLiga + ')', 'g' ),
+        new RegExp( '((' + rBD + '|' + rBDLiga + ')+)', 'g' ),
       ],
       punct:   null,
       hanzi:   new RegExp( `(${rHan})+`, 'g' ),
       western: new RegExp( `(${rLatn}|${rGk}|${rCy}|${rPt})+`, 'gi' ),
       kana:    new RegExp( `(${rKana}|${rKanaS}|${rKanaH})+`, 'g' ),
       eonmun:  new RegExp( `(${rEon}|${rEonH}|${rPt})+`, 'g' ),
+    },
+
+    consecutive: {
+      biaodian: [
+        new RegExp( '(' + rBDLiga + '(' + rBDOpen + '|' + rBDEnd + ')' + '+)', 'g' ),
+        new RegExp( '(' + rBDEnd + rBDLiga + ')', 'g' ),
+        new RegExp( '((' + rBD + '|' + rBDLiga + '){2,})', 'g' ),
+      ],
     },
 
     /* Punctuation Rules (禁則)
@@ -395,7 +404,7 @@ Object.assign( TYPESET.char, {
   cjk:      TYPESET.char.hanzi,
   greek:    TYPESET.char.ellinika,
   cyrillic: TYPESET.char.Kirillica,
-  hangul:   TYPESET.char.eonmum,
+  hangul:   TYPESET.char.eonmun,
 })
 
 Object.assign( TYPESET.group, {

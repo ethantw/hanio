@@ -287,6 +287,83 @@ desc( 'Normalisation', () => {
   })
 })
 
+desc( 'Fribio extensions', () => {
+  let html, hio
+
+  it( 'Jinzify', () => {
+    html = '<p>林·菲利認為，身為一個「航海家」，這是不可寬恕的過錯。'
+    hio  = Hanio( html ).jinzify()
+    htmleq( hio.html, '<p><h-jinze class="zhong">林·菲</h-jinze>利認<h-jinze class="wei">為，</h-jinze>身為一個<h-jinze class="tou">「航</h-jinze>海<h-jinze class="wei">家」，</h-jinze>這是不可寬恕的過<h-jinze class="wei">錯。</h-jinze></p>' )
+
+    html = '<p>林·菲利認為——身為一個「航海家」——這是不可寬恕的過錯……。'
+    hio  = Hanio( html ).jinzify()
+    htmleq( hio.html, '<p><h-jinze class="zhong">林·菲</h-jinze>利認為——身為一個<h-jinze class="tou">「航</h-jinze>海<h-jinze class="wei">家」</h-jinze>——這是不可寬恕的過錯……。</p>' )
+  })
+
+  it( 'Groupify', () => {
+    html = '<p>林·菲利認為，身為一個「航海家」，這是不可寬恕的過錯……。'
+    hio  = Hanio( html ).groupify({ all: true })
+    htmleq( hio.html, '<p><h-char-group class="eastasian hanzi cjk">林</h-char-group><h-char-group class="biaodian cjk">·</h-char-group><h-char-group class="eastasian hanzi cjk">菲利認為</h-char-group><h-char-group class="biaodian cjk">，</h-char-group><h-char-group class="eastasian hanzi cjk">身為一個</h-char-group><h-char-group class="biaodian cjk">「</h-char-group><h-char-group class="eastasian hanzi cjk">航海家</h-char-group><h-char-group class="biaodian cjk">」，</h-char-group><h-char-group class="eastasian hanzi cjk">這是不可寬恕的過錯</h-char-group><h-char-group class="biaodian cjk">……。</h-char-group></p>' )
+
+    html = '<p>林·菲利認為——身為一個<span>「航海家」</span>，這是不可寬恕的過錯……！'
+    hio  = Hanio( html ).groupify({ all: true })
+    htmleq( hio.html, '<p><h-char-group class="eastasian hanzi cjk">林</h-char-group><h-char-group class="biaodian cjk">·</h-char-group><h-char-group class="eastasian hanzi cjk">菲利認為</h-char-group><h-char-group class="biaodian cjk">——</h-char-group><h-char-group class="eastasian hanzi cjk">身為一個</h-char-group><span><h-char-group class="biaodian cjk">「</h-char-group><h-char-group class="eastasian hanzi cjk">航海家</h-char-group><h-char-group class="biaodian cjk portion is-first">」</h-char-group></span><h-char-group class="biaodian cjk portion is-end">，</h-char-group><h-char-group class="eastasian hanzi cjk">這是不可寬恕的過錯</h-char-group><h-char-group class="biaodian cjk">……！</h-char-group></p>' )
+
+    html = `
+<p>「你好」！
+<p>「こんにちは」、"안녕하세요."
+<p>‘Hello World’, «Γειά Σου Κόσμε», 'привет мир'.
+    `
+    hio = Hanio( html ).groupify({ all: true })
+    htmleq( hio.html, `<p><h-char-group class="biaodian cjk">「</h-char-group><h-char-group class="eastasian hanzi cjk">你好</h-char-group><h-char-group class="biaodian cjk">」！</h-char-group></p><p><h-char-group class="biaodian cjk">「</h-char-group><h-char-group class="eastasian cjk kana">こんにちは</h-char-group><h-char-group class="biaodian cjk">」、</h-char-group><h-word class="western">"</h-word><h-word class="eastasian eonmun hangul">안녕하세요</h-word><h-word class="western">."</h-word></p><p><h-word class="western">‘Hello</h-word> <h-word class="western">World’,</h-word> <h-word class="western">«Γειά</h-word> <h-word class="western">Σου</h-word> <h-word class="western">Κόσμε»,</h-word> <h-word class="western">'привет</h-word> <h-word class="western">мир'.</h-word> </p>` )
+
+    hio = Hanio( html ).groupify({ kana: true })
+    eq( hio.context.find( '.kana' ).length, 1 )
+    eq( hio.context.find( '.eonmun' ).length, 0 )
+    eq( hio.context.find( '.western' ).length, 0 )
+
+    hio.groupify({ western: true, eonmun: true })
+    eq( hio.context.find( '.kana' ).length, 1 )
+    eq( hio.context.find( '.eonmun' ).length, 1 )
+    eq( hio.context.find( '.eastasian' ).length, 2 )
+    eq( hio.context.find( '.western' ).length, 9 )
+
+    hio.groupify({ hanzi: true })
+    eq( hio.context.find( '.hanzi' ).length, 1 )
+    eq( hio.context.find( '.eastasian' ).length, 3 )
+  })
+
+  it( 'Charify', () => {
+    hio = Hanio( html ).charify({ all: true })
+    htmleq( hio.html, `<p><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char><h-char class="eastasian cjk hanzi">你</h-char><h-char class="eastasian cjk hanzi">好</h-char><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char><h-char unicode="ff01" class="biaodian cjk bd-end">！</h-char></p><p><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char><h-char class="eastasian cjk kana">こ</h-char><h-char class="eastasian cjk kana">ん</h-char><h-char class="eastasian cjk kana">に</h-char><h-char class="eastasian cjk kana">ち</h-char><h-char class="eastasian cjk kana">は</h-char><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char><h-char unicode="3001" class="biaodian cjk bd-end bd-cop">、</h-char><h-char class="punct">"</h-char><h-char class="eastasian eonmun hangul">안</h-char><h-char class="eastasian eonmun hangul">녕</h-char><h-char class="eastasian eonmun hangul">하</h-char><h-char class="eastasian eonmun hangul">세</h-char><h-char class="eastasian eonmun hangul">요</h-char><h-char class="punct">.</h-char><h-char class="punct">"</h-char></p><p><h-char class="punct">‘</h-char><h-char class="alphabet western latin">H</h-char><h-char class="alphabet western latin">e</h-char><h-char class="alphabet western latin">l</h-char><h-char class="alphabet western latin">l</h-char><h-char class="alphabet western latin">o</h-char> <h-char class="alphabet western latin">W</h-char><h-char class="alphabet western latin">o</h-char><h-char class="alphabet western latin">r</h-char><h-char class="alphabet western latin">l</h-char><h-char class="alphabet western latin">d</h-char><h-char class="punct">’</h-char><h-char class="punct">,</h-char> <h-char class="punct">«</h-char><h-char class="alphabet western ellinika greek">Γ</h-char><h-char class="alphabet western ellinika greek">ει</h-char><h-char class="alphabet western ellinika greek">ά</h-char> <h-char class="alphabet western ellinika greek">Σ</h-char><h-char class="alphabet western ellinika greek">ο</h-char><h-char class="alphabet western ellinika greek">υ</h-char> <h-char class="alphabet western ellinika greek">Κ</h-char><h-char class="alphabet western ellinika greek">ό</h-char><h-char class="alphabet western ellinika greek">σ</h-char><h-char class="alphabet western ellinika greek">μ</h-char><h-char class="alphabet western ellinika greek">ε</h-char><h-char class="punct">»</h-char><h-char class="punct">,</h-char> <h-char class="punct">'</h-char><h-char class="alphabet western kirillica cyrillic">п</h-char><h-char class="alphabet western kirillica cyrillic">р</h-char><h-char class="alphabet western kirillica cyrillic">и</h-char><h-char class="alphabet western kirillica cyrillic">в</h-char><h-char class="alphabet western kirillica cyrillic">е</h-char><h-char class="alphabet western kirillica cyrillic">т</h-char> <h-char class="alphabet western kirillica cyrillic">м</h-char><h-char class="alphabet western kirillica cyrillic">и</h-char><h-char class="alphabet western kirillica cyrillic">р</h-char><h-char class="punct">'</h-char><h-char class="punct">.</h-char> </p>` )
+
+    hio = Hanio( html ).charify({ eastasian: true })
+    eq( hio.context.find( 'h-char.kana' ).length, 5 )
+    eq( hio.context.find( 'h-char.latin' ).length, 0 )
+    eq( hio.context.find( 'h-char.western' ).length, 0 )
+    eq( hio.context.find( 'h-char.greek' ).length, 0 )
+
+    hio.charify({ ellinika: true })
+    eq( hio.context.find( 'h-char.kana' ).length, 5 )
+    eq( hio.context.find( 'h-char.latin' ).length, 0 )
+    eq( hio.context.find( 'h-char.western' ).length, 11 )
+    eq( hio.context.find( 'h-char.greek' ).length, 11 )
+
+    hio.charify({ biaodian: true, punct: true })
+    eq( hio.context.find( 'h-char.bd-open' ).length, 2 )
+    eq( hio.context.find( 'h-char.biaodian' ).length, 6 )
+    eq( hio.context.find( 'h-char.punct' ).length, 12 )
+  })
+
+  it( 'Altogether', () => {
+    hio = Hanio( html )
+      .jinzify()
+      .groupify({ all: true })
+      .charify({ all: true })
+    htmleq( hio.html, `<p><h-jinze class="tou"><h-char-group class="biaodian cjk"><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char></h-char-group><h-char-group class="eastasian hanzi cjk"><h-char class="eastasian cjk hanzi">你</h-char></h-char-group></h-jinze><h-jinze class="wei"><h-char-group class="eastasian hanzi cjk"><h-char class="eastasian cjk hanzi">好</h-char></h-char-group><h-char-group class="biaodian cjk"><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char><h-char unicode="ff01" class="biaodian cjk bd-end">！</h-char></h-char-group></h-jinze></p><p><h-jinze class="tou"><h-char-group class="biaodian cjk"><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char></h-char-group><h-char-group class="eastasian cjk kana"><h-char class="eastasian cjk kana">こ</h-char></h-char-group></h-jinze><h-char-group class="eastasian cjk kana"><h-char class="eastasian cjk kana">ん</h-char><h-char class="eastasian cjk kana">に</h-char><h-char class="eastasian cjk kana">ち</h-char></h-char-group><h-jinze class="wei"><h-char-group class="eastasian cjk kana"><h-char class="eastasian cjk kana">は</h-char></h-char-group><h-char-group class="biaodian cjk"><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char><h-char unicode="3001" class="biaodian cjk bd-end bd-cop">、</h-char></h-char-group></h-jinze><h-word class="western"><h-char class="punct">"</h-char></h-word><h-word class="eastasian eonmun hangul"><h-char class="eastasian eonmun hangul">안</h-char><h-char class="eastasian eonmun hangul">녕</h-char><h-char class="eastasian eonmun hangul">하</h-char><h-char class="eastasian eonmun hangul">세</h-char><h-char class="eastasian eonmun hangul">요</h-char></h-word><h-word class="western"><h-char class="punct">.</h-char><h-char class="punct">"</h-char></h-word></p><p><h-word class="western"><h-char class="punct">‘</h-char><h-char class="alphabet western latin">H</h-char><h-char class="alphabet western latin">e</h-char><h-char class="alphabet western latin">l</h-char><h-char class="alphabet western latin">l</h-char><h-char class="alphabet western latin">o</h-char></h-word> <h-word class="western"><h-char class="alphabet western latin">W</h-char><h-char class="alphabet western latin">o</h-char><h-char class="alphabet western latin">r</h-char><h-char class="alphabet western latin">l</h-char><h-char class="alphabet western latin">d</h-char><h-char class="punct">’</h-char><h-char class="punct">,</h-char></h-word> <h-word class="western"><h-char class="punct">«</h-char><h-char class="alphabet western ellinika greek">Γ</h-char><h-char class="alphabet western ellinika greek">ει</h-char><h-char class="alphabet western ellinika greek">ά</h-char></h-word> <h-word class="western"><h-char class="alphabet western ellinika greek">Σ</h-char><h-char class="alphabet western ellinika greek">ο</h-char><h-char class="alphabet western ellinika greek">υ</h-char></h-word> <h-word class="western"><h-char class="alphabet western ellinika greek">Κ</h-char><h-char class="alphabet western ellinika greek">ό</h-char><h-char class="alphabet western ellinika greek">σ</h-char><h-char class="alphabet western ellinika greek">μ</h-char><h-char class="alphabet western ellinika greek">ε</h-char><h-char class="punct">»</h-char><h-char class="punct">,</h-char></h-word> <h-word class="western"><h-char class="punct">'</h-char><h-char class="alphabet western kirillica cyrillic">п</h-char><h-char class="alphabet western kirillica cyrillic">р</h-char><h-char class="alphabet western kirillica cyrillic">и</h-char><h-char class="alphabet western kirillica cyrillic">в</h-char><h-char class="alphabet western kirillica cyrillic">е</h-char><h-char class="alphabet western kirillica cyrillic">т</h-char></h-word> <h-word class="western"><h-char class="alphabet western kirillica cyrillic">м</h-char><h-char class="alphabet western kirillica cyrillic">и</h-char><h-char class="alphabet western kirillica cyrillic">р</h-char><h-char class="punct">'</h-char><h-char class="punct">.</h-char></h-word> </p>` )
+  })
+})
+
 desc( 'Typography', () => {
   let html, hio
 
@@ -476,11 +553,4 @@ desc( 'Typesets (inline)', () => {
     htmleq( hio.html, '<p><em><h-cs hidden class="jinze-outer jiya-outer"> </h-cs><h-jinze class="tou"><h-char unicode="300a" class="biaodian cjk bd-open bd-jiya"><h-inner>《</h-inner></h-char><h-char class="eastasian cjk hanzi">書</h-char></h-jinze><h-jinze class="wei"><h-char class="eastasian cjk hanzi">名</h-char><h-char unicode="300b" class="biaodian cjk bd-close bd-end bd-jiya bd-consecutive"><h-inner>》</h-inner></h-char></h-jinze><h-cs hidden class="jinze-outer jiya-outer" prev="bd-close bd-end"> </h-cs><h-jinze class="tou"><h-char unicode="3008" class="biaodian cjk bd-open bd-jiya bd-consecutive end-portion" prev="bd-close bd-end"><h-inner>〈</h-inner></h-char><h-char class="eastasian cjk hanzi">篇</h-char></h-jinze><h-jinze class="wei"><h-char class="eastasian cjk hanzi">名</h-char><h-char unicode="3009" class="biaodian cjk bd-close bd-end bd-jiya bd-consecutive"><h-inner>〉</h-inner></h-char></h-jinze><h-cs hidden class="jinze-outer jiya-outer" prev="bd-close bd-end"> </h-cs><h-jinze class="tou"><h-char unicode="ff08" class="biaodian cjk bd-open bd-jiya bd-consecutive end-portion" prev="bd-close bd-end"><h-inner>（</h-inner></h-char><h-char class="eastasian cjk hanzi">內</h-char></h-jinze><h-jinze class="wei"><h-char class="eastasian cjk hanzi">容</h-char><h-char unicode="ff09" class="biaodian cjk bd-close bd-end bd-jiya bd-consecutive"><h-inner>）</h-inner></h-char></h-jinze><h-cs hidden class="jinze-outer jiya-outer" prev="bd-close bd-end"> </h-cs><h-jinze class="touwei"><h-char unicode="300c" class="biaodian cjk bd-open bd-jiya bd-consecutive" prev="bd-close bd-end"><h-inner>「</h-inner></h-char><h-char unicode="300e" class="biaodian cjk bd-open bd-jiya bd-consecutive end-portion" prev="bd-open"><h-inner>『</h-inner></h-char><h-char class="eastasian cjk hanzi">好</h-char><h-char unicode="300f" class="biaodian cjk bd-close bd-end bd-jiya bd-consecutive"><h-inner>』</h-inner></h-char><h-char unicode="3001" class="biaodian cjk bd-end bd-cop bd-jiya bd-consecutive end-portion bd-hangable" prev="bd-close bd-end"><h-inner>、</h-inner></h-char></h-jinze><h-cs hidden class="jinze-outer jiya-outer bd-end bd-cop end-portion hangable-outer"> </h-cs><h-char class="eastasian cjk hanzi">不</h-char><h-jinze class="wei"><h-char class="eastasian cjk hanzi">好</h-char><h-char unicode="300d" class="biaodian cjk bd-close bd-end bd-jiya"><h-inner>」</h-inner></h-char></h-jinze><h-cs hidden class="jinze-outer jiya-outer"> </h-cs></em></p>' )
   })
 })
-
-/*
-desc( '', () => {
-  it( '', () => {
-  })
-})
-*/
 

@@ -73,32 +73,32 @@ Object.assign( Fibrio.fn, {
     .addAvoid( JINZE_AVOID )
     .replace(
       TYPESET.jinze.touwei,
-      ( portion, mat ) => (
+      portion => (
         portion.idx === 0 && portion.isEnd || portion.idx === 1
       )
-        ? create( `<h-jinze class="touwei">${ mat[0] }</h-jinze≥` )
+        ? create( `<h-jinze class="touwei">${ portion.text }</h-jinze≥` )
         : ''
     )
     .replace(
       TYPESET.jinze.wei,
-      ( portion, mat ) => portion.idx === 0
-        ? create( `<h-jinze class="wei">${ mat[0] }</h-jinze≥` )
+      portion => portion.idx === 0
+        ? create( `<h-jinze class="wei">${ portion.text }</h-jinze≥` )
         : ''
     )
     .replace(
       TYPESET.jinze.tou,
-      ( portion, mat ) => (
+      portion => (
         portion.idx === 0 && portion.isEnd || portion.idx === 1
       )
-        ? create( `<h-jinze class="tou">${ mat[0] }</h-jinze≥` )
+        ? create( `<h-jinze class="tou">${ portion.text }</h-jinze≥` )
         : ''
     )
     .replace(
       TYPESET.jinze.middle,
-      ( portion, mat ) => (
+      portion => (
         portion.idx === 0 && portion.isEnd || portion.idx === 1
       )
-        ? create( `<h-jinze class="zhong middle">${ mat[0] }</h-jinze≥` )
+        ? create( `<h-jinze class="zhong">${ portion.text }</h-jinze≥` )
         : ''
     )
     .removeAvoid( JINZE_AVOID )
@@ -114,24 +114,28 @@ Object.assign( Fibrio.fn, {
     //punct:    all,
       hanzi:    all || eastasian, // Include Kana
       kana:     all || eastasian || hanzi,
-      eonmum:   all || eastasian,
+      eonmun:   all || eastasian,
       western:  all, // Include Latin, Greek and Cyrillic alphabet
     }, option )
 
     this.addAvoid( GROUP_AVOID )
 
     if ( option.biaodian ) {
-      this.replace(
-        TYPESET.group.biaodian[0], createBDGroup
-      ).replace(
-        TYPESET.group.biaodian[1], createBDGroup
-      )
+      this
+      .replace( TYPESET.group.biaodian[0], createBDGroup )
+      .replace( TYPESET.group.biaodian[1], createBDGroup )
+      .replace( TYPESET.group.biaodian[2], createBDGroup )
     }
 
     if ( option.hanzi || option.cjk ) {
-      this.wrap(
+      this
+      .wrap(
+        TYPESET.group.kana,
+        `<h-char-group class="eastasian cjk kana"></h-char-group>`
+      )
+      .wrap(
         TYPESET.group.hanzi,
-        `<h-char-group class="hanzi cjk"></h-char-group>`
+        `<h-char-group class="eastasian hanzi cjk"></h-char-group>`
       )
     }
 
@@ -145,14 +149,14 @@ Object.assign( Fibrio.fn, {
     if ( option.kana ) {
       this.wrap(
         TYPESET.group.kana,
-        `<h-char-group class="cjk kana"></h-char-group>`
+        `<h-char-group class="eastasian cjk kana"></h-char-group>`
       )
     }
 
-    if ( option.eonmum || option.hangul ) {
+    if ( option.eonmun || option.hangul ) {
       this.wrap(
-        TYPESET.group.eonmum,
-        `<h-word class="eonmum hangul"></h-word>`
+        TYPESET.group.eonmun,
+        `<h-word class="eastasian eonmun hangul"></h-word>`
       )
     }
 
@@ -169,7 +173,7 @@ Object.assign( Fibrio.fn, {
       punct:     all,
       hanzi:     all || eastasian, // Include Kana
       kana:      all || eastasian || hanzi,
-      eonmum:    all || eastasian,
+      eonmun:    all || eastasian,
       western:   all || eastasian, // Include Latin, Greek and Cyrillic alphabet
       latin:     all || western,
       ellinika:  all || western,
@@ -262,12 +266,12 @@ Object.assign( Fibrio.fn, {
       )
     }
 
-    if ( option.eonmum || option.hangul ) {
+    if ( option.eonmun || option.hangul ) {
       this.wrap(
-        TYPESET.char.eonmum,
+        TYPESET.char.eonmun,
         charWrapper(
-          option.eonmum || option.hangul,
-          `<h-char class="eastasian eonmum hangul"></h-char>`
+          option.eonmun || option.hangul,
+          `<h-char class="eastasian eonmun hangul"></h-char>`
         )
       )
     }
@@ -286,10 +290,8 @@ void [
   'addAvoid', 'addBdry',
   'removeAvoid','removeBdry',
   'jinzify', 'groupify', 'charify',
-].forEach( method => {
-  Core.fn[ method ] = function( ...arg ) {
-    this.finder[ method ]( ...arg )
-    return this
-  }
+].forEach( method => Core.fn[ method ] = function( ...arg ) {
+  this.finder[ method ]( ...arg )
+  return this
 })
 

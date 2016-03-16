@@ -8,13 +8,13 @@ export default function correctBiaodian() {
     .replace(
       /([‘“])/g, portion => (
         createBDChar( portion.text )
-        .addClass( 'bd-open punct western' )
+        .addClass( 'bd-open punct' )
       )
     )
     .replace(
       /([’”])/g, portion => (
         createBDChar( portion.text )
-        .addClass( 'bd-close bd-end punct western' )
+        .addClass( 'bd-close bd-end punct' )
       )
     )
     .charify({ biaodian: true })
